@@ -13,26 +13,39 @@ let countUser = users.length
 // membuat variabel menghitung jumlah pengguna
 
 exports.getAllUsers = (req,res)=>{
+// mendefinisikan fungsi untuk mendapatkan semua penguna
+// yg berasal dari array of objec
     return res.json({
+    // mengembalikan respon json jika berhasil
         succces: true,
+        // pesan sukses        
         maessage : 'List all users',
+        // pesan cetak string list all users
         results : users
+        // mengembalikan hasil dari array users
     })
 }
 
 exports.getDetailUser = (req,res)=>{
+// mendefininikan fungsi getdatauser, parameter fungsi arrow untuk mewakili req dan res
     const user = users.filter(item => item.id === parseInt(req.params.id))
-    // melakukan filter user untuk mendapatkan data user dengan ID yang sesuai
+    // melakukan filter user untuk mendapatkan data user dengan ID yang sesuai,dan konfersi id dari string ke nomor
     if(!user[0]){
+    // garding, jika array kosong maka
         return res.status(404).json({
+        // kembalikan resposn status 404 ke penguna
             success:false,
             message:'user not found'
+            // cetak ke penguna
         })
     }
         return res.json({
+        // kembalikan jika penguna ditemukan, kirim respons json
             success: true,
             message: 'ok',
+            // cetak ke penguna
             results:user[0]
+            // kembalikan data user yg di masukan dari pengguna dengan id tertentu
         })    
 }
 
