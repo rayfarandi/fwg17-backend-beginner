@@ -5,6 +5,7 @@ const app= express()
 //memanggil fungsi express yang di jadikan variabel app , yg akan return objek express
 
 app.use(express.urlencoded({extended: false}))
+// mengaktifkan middelware bawaan dari express, agar memahami data yg di kirimkan penguna dari body
 
 app.use('/',require('./src/routers'))
 // secara otomatis akan melakukan import ke folder routers dengan nama index.js
