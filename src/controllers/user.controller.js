@@ -1,35 +1,57 @@
+const users =[
+        {
+            id: 1,
+            name: 'Leanne Graham'
+        },
+        {
+            id: 2,
+            name:'Clamentine Duduque'
+
+        }
+    ] //// array untuk menyimpan data pengguna
+let countUser = users.length
+// membuat variabel menghitung jumlah pengguna
+
 exports.getAllUsers = (req,res)=>{
     return res.json({
         succces: true,
         maessage : 'List all users',
-        results : [
-            {
-             id: 1,
-             name: 'ran'   
-            },
-            {
-                id: 2,
-                name: 'randi'
-            }
-        ]
+        results : users
     })
 }
 
-exports.getAllUsersID = (req,res)=>{
-    const userId = req.params.id;
-    
-    return res.json({
-        id: userId,
-        maessage : `dengan id ${userId} berhasil`
-    })
-}
-
-exports.createUsers = (req,res)=>{
+exports.getDetailUser = (req,res)=>{
+    const user = users.filter(item => item.id === parseInt(req.params.id))
+    // melakukan filter user untuk mendapatkan data user dengan ID yang sesuai
+    if(user[0]){
         return res.json({
-        success: true,
-        message: 'User created successfully',
+            success: true,
+            message: 'ok',
+            results:user[0]
+        })
+    }else{
+        return res.status(404).json({
+            success:false,
+            message:'user not found'
+        })
+    }
+    
+}
 
-    });
+exports.createUser = (req,res)=>{
+    req.countUser = req.countUser + 1
+    const {name} = req.body
+    countUser = countUser + 1
+    const user = {
+        id : countUser,
+        name
+    }
+    users.push(user)
+    return res.json({
+        success :true,
+        message : 'creat user success',
+        results :user
+    })
 }
 
 exports.updateUsers = (req,res)=>{
