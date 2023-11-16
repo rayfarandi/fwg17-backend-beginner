@@ -7,8 +7,8 @@ userRouter.get('/',userController.getAllUsers)
 //ketika mendapatkan '/' user dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllUsers dari controller user.controller
 userRouter.get('/:id',userController.getDetailUser)
 userRouter.post('/',userController.createUser)
-userRouter.patch('/',userController.updateUsers)
-userRouter.delete('/',userController.deleteUsers)
+userRouter.patch('/:id',userController.updateUser)
+userRouter.delete('/:id',userController.deleteUser)
 
 
 module.exports = userRouter

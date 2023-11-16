@@ -1,4 +1,4 @@
-const users =[
+let users =[
         {
             id: 1,
             name: 'Leanne Graham'
@@ -23,19 +23,17 @@ exports.getAllUsers = (req,res)=>{
 exports.getDetailUser = (req,res)=>{
     const user = users.filter(item => item.id === parseInt(req.params.id))
     // melakukan filter user untuk mendapatkan data user dengan ID yang sesuai
-    if(user[0]){
-        return res.json({
-            success: true,
-            message: 'ok',
-            results:user[0]
-        })
-    }else{
+    if(!user[0]){
         return res.status(404).json({
             success:false,
             message:'user not found'
         })
     }
-    
+        return res.json({
+            success: true,
+            message: 'ok',
+            results:user[0]
+        })    
 }
 
 exports.createUser = (req,res)=>{
@@ -54,24 +52,37 @@ exports.createUser = (req,res)=>{
     })
 }
 
-exports.updateUsers = (req,res)=>{
-    const {id,username} =req.body
-    if(username === "user" && id === "1"){
-        return res.json ({
-            succces : true,
-            message: 'update data berhasil'
-        })
-    }else {
-        return res.json({
-            succces: false,
-            message: 'update data tidak berhasil'
+exports.updateUser = (req,res)=>{
+    const {id} = req.params
+    const {name} = req.body
+    const userId = users.map(user => user.id).indexOf(parseInt(id))
+    if(userId === -1){
+        return res.status(404).json({
+            success: false,
+            message: 'user not found'
         })
     }
+        users[userId].name = name
+        return res.json({
+            success : true,
+            message :'ok',
+            results :users[userId]
+        })
+     
 }
 
-exports.deleteUsers = (req,res)=>{
-    return res.json({
-        success :true,
-        message: 'hapus data user'
-    })
+exports.deleteUser = (req,res)=>{
+    const {id} = req.params
+    const user = users.filter(user =>user.id === parseInt(id))
+    if(!user.length){
+            return res.status(404).json({
+            success: false,
+            message : 'user not found'
+        })
+    }
+            users = users.filter(user=>user.id !==parseInt(id))
+        return res.json({
+            success :true,
+            message: 'hapus data user'
+        })
 }
