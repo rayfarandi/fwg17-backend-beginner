@@ -13,8 +13,8 @@ let countUser = users.length
 // membuat variabel menghitung jumlah pengguna
 
 exports.getAllUsers = (req,res)=>{
-// mendefinisikan fungsi untuk mendapatkan semua penguna
-// yg berasal dari array of objec
+// mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
+
     return res.json({
     // mengembalikan respon json jika berhasil
         succces: true,
