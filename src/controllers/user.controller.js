@@ -12,9 +12,11 @@ let users =[
 let countUser = users.length
 // membuat variabel menghitung jumlah pengguna
 
-exports.getAllUsers = (req,res)=>{
+const userModel = require('../models/users.model')
+ 
+exports.getAllUsers = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
-
+    const users = await userModel.findAll()
     return res.json({
     // mengembalikan respon json jika berhasil
         succces: true,
