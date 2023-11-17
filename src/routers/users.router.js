@@ -12,6 +12,8 @@ userRouter.post('/',userController.createUser)
 userRouter.patch('/:id',userController.updateUser)
 //ketika mendapatkan '/:id' user dari http dengan permintaan patch, dan akan menjalankan fungsi updateUser dari user.controller untuk data user by id
 userRouter.delete('/:id',userController.deleteUser)
+//ketika mendapatkan '/:id' user dari http dengan permintaan delete, dan akan menjalankan fungsi deleteUser dari user.controller untuk data user by id
 
 
 module.exports = userRouter
+// membuat modul userRouter yg dapat di gunakan fungsinya

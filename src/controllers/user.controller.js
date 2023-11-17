@@ -110,13 +110,18 @@ exports.deleteUser = (req,res)=>{
     if(!user.length){
     // jika data user dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
             return res.status(404).json({
+            //// kembalikan resposn status 404 ke penguna
             success: false,
             message : 'user not found'
+            // cetak ke penguna
         })
     }
             users = users.filter(user=>user.id !==parseInt(id))
+            // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array users dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
         return res.json({
+        // kirim respons json ke penguna 
             success :true,
             message: 'hapus data user'
+            // cetak ke penguna
         })
 }
