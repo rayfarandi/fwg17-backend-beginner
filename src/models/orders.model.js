@@ -16,11 +16,11 @@ exports.findOne = async (id)=>{
 
 exports.insert = async (data)=>{
     const sql = `INSERT INTO "orders" 
-    ("name")
+    ("userid","orderNumber","total","taxAmount","status","deliveryAddress","fullName","email")
     VALUES
-    ($1)
+    ($1,$2,$3,$4,$5,$6,$7,$8)
     RETURNING * `
-    const values = [data.name]
+    const values = [data.userid,data.orderNumber,data.total,data.taxAmount,data.status,data.deliveryAddress,data.fullName,data.email]
     const {rows} = await db.query(sql, values)
     return rows[0]
 } 
