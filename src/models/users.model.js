@@ -25,20 +25,22 @@ exports.insert = async (data)=>{
     return rows[0]
 } 
 
-exports.updateUser = async (data) => {
-    const sql = `UPDATE "users" SET
-    "fullName" = $1,
-    "email" = $2,
-    "password" = $3,
-    "address" = $4,
-    "picture" = $5,
-    "phoneNumber" = $6,
-    "role" = $7
-    WHERE "id" = $8
-    RETURNING *`
-
-    const values = [data.fullName, data.email, data.password, data.address, data.picture, data.phoneNumber, data.role, data.id];
-
+exports.update = async (id,data) => {
+  const column = []
+  const values = []
+  values.push(parseInt(id))
+  for (let item in data){
+    values.push(data[item])
+    column.push(`"${item}"=$${values.length}`)
+  }
+    const sql = `UPDATE "users" SET ${column.join(', ')}, "update_at" = now() WHERE id=$1 RETURNING *`
     const {rows} = await db.query(sql, values)
-    return rows[0];
+    return rows[0]
+}
+
+exports.delete = async(id) =>{
+const sql = `DELETE FROM "users" WHERE id=$1 RETURNING *`
+    const values = [id]
+    const {rows} = await db.query(sql,values)
+    return rows[0]
 }

@@ -14,6 +14,5 @@ userRouter.patch('/:id',userController.updateUser)
 userRouter.delete('/:id',userController.deleteUser)
 //ketika mendapatkan '/:id' user dari http dengan permintaan delete, dan akan menjalankan fungsi deleteUser dari user.controller untuk data user by id
 
-
 module.exports = userRouter
 // membuat modul userRouter yg dapat di gunakan fungsinya

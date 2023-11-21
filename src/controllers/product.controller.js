@@ -1,30 +1,14 @@
-let products =[
-        {
-            id: 1,
-            name: 'Leanne Graham'
-        },
-        {
-            id: 2,
-            name:'Clamentine Duduque'
-
-        }
-    ] //// array untuk menyimpan data pengguna
-let countproduct = products.length
-// membuat variabel menghitung jumlah pengguna
-
 const productModel = require('../models/products.model')
  
 exports.getAllproducts = async (req,res)=>{
-// mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
-    const products = await productModel.findAll()
-    return res.json({
-    // mengembalikan respon json jika berhasil
-        succces: true,
-        // pesan sukses        
-        maessage : 'List all products',
-        // pesan cetak string list all products
-        results : products
-        // mengembalikan hasil dari array products
+   const {search,sortBy,order,page} = req.query
+
+   const products = await productModel.findAll(search,sortBy,order,page)
+   
+   return res.json({
+    success :true,
+    message : 'list All product',
+    results : products
     })
 }
 
@@ -82,7 +66,7 @@ exports.createproduct = async (req, res) => {
             success: true,
             message: 'create product success',
             results: product
-        });
+        })
     } catch (err) {
         console.log(JSON.stringify(err));
 
@@ -92,12 +76,6 @@ exports.createproduct = async (req, res) => {
                     success: false,
                     message: `${err.column} cannot be empty`
                 })
-                case "23505":
-                    const errorMessage = err.column = 'email already exists'
-                    return res.status(400).json({
-                        success: false,
-                        message: errorMessage
-                    })
             default:
                 return res.status(500).json({
                     success: false,
@@ -141,62 +119,44 @@ exports.createproduct = async (req, res) => {
 exports.updateproduct = async (req, res) => {
     try {
         const {id} = req.params
-        const product = await productModel.update(req.body);
-        if (product) {
+        const product = await productModel.update(id,req.body)
             return res.json({
                 success: true,
                 message: 'update product success',
                 results: product
-            });
-        } else {
-            // menghendel case jika data tidak di temukan
-            return res.status(404).json({
-                success: false,
-                message: 'Data not found for update'
-            });
-        }
-    } catch (err) {
-        console.log(JSON.stringify(err));
+            })
+        }catch (err) {
+        console.log(JSON.stringify(err))
 
         switch (err.code) {
-           
+            case "42601": // jika tidak di isi apa2
+            return res.status(400).json({
+                success: false,
+                message: `fill in the  correct data`
+            })
             case "23502":
+                const errorMessage = `key id not found`; // jika tidak mengisi id
                 return res.status(400).json({
                     success: false,
-                    message: `${err.column} data not found`
-                });
+                    message: `data not found`
+                })
             default:
-                
                 return res.status(500).json({
                     success: false,
                     message: 'Internal server error'
-                });
+                })
         }
     }
 }
 
 
-exports.deleteproduct = (req,res)=>{
-//// mendefininikan fungsi deleteproduct, parameter fungsi arrow untuk mewakili req dan res
-    const {id} = req.params
-    // mendapatkan id dari paramaeter yg di masukan product
-    const product = products.filter(product =>product.id === parseInt(id))
-    // menjalankan filter pada array products untuk mendapatkan product.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
-    if(!product.length){
-    // jika data product dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
-            return res.status(404).json({
-            //// kembalikan resposn status 404 ke penguna
-            success: false,
-            message : 'product not found'
-            // cetak ke penguna
-        })
-    }
-            products = products.filter(product=>product.id !==parseInt(id))
-            // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array products dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
+exports.deleteproduct = async (req,res)=>{
+        const {id} =req.params
+        const product = await productModel.delete(id)
+    
         return res.json({
-        // kirim respons json ke penguna 
             success :true,
-            message: 'hapus data product'
-            // cetak ke penguna
+            message : 'delete succes',
+            results : product
         })
 }
