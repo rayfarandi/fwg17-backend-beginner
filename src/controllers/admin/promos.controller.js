@@ -12,7 +12,7 @@ let promos =[
 let countpromo = promos.length
 // membuat variabel menghitung jumlah pengguna
 
-const promoModel = require('../models/promos.model')
+const promoModel = require('../../models/promos.model')
 
 exports.getAllpromos = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res

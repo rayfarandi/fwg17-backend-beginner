@@ -1,7 +1,7 @@
 const messageRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'messageRouter'
 
-const messageController = require ('../controllers/messages.controller')
+const messageController = require ('../../controllers/admin/messages.controller')
 //adalah fungsi dari variabel 'messageController' yang mengimport modul dari lokasi message.controller
 messageRouter.get('/',messageController.getAllmessages)
 //ketika mendapatkan '/' message dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllmessages dari controller message.controller untuk melihat semua data messages

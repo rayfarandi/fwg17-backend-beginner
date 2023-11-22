@@ -12,7 +12,7 @@ let productVariants =[
 let countproductVariant = productVariants.length
 // membuat variabel menghitung jumlah pengguna
 
-const productVariantModel = require('../models/productVariants.model')
+const productVariantModel = require('../../models/productVariants.model')
  
 exports.getAllproductVariants = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res

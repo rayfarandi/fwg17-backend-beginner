@@ -1,7 +1,7 @@
 const productVariantRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'productVariantRouter'
 
-const productVariantController = require ('../controllers/productVariant.controller')
+const productVariantController = require ('../../controllers/admin/productVariant.controller')
 //adalah fungsi dari variabel 'productVariantController' yang mengimport modul dari lokasi productVariant.controller
 productVariantRouter.get('/',productVariantController.getAllproductVariants)
 //ketika mendapatkan '/' productVariant dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllproductVariants dari controller productVariant.controller untuk melihat semua data productVariants

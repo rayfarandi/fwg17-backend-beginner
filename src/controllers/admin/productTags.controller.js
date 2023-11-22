@@ -12,7 +12,7 @@ let productTags =[
 let countproductTag = productTags.length
 // membuat variabel menghitung jumlah pengguna
 
-const productTagModel = require('../models/productTags.model')
+const productTagModel = require('../../models/productTags.model')
 
 exports.getAllproductTags = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res

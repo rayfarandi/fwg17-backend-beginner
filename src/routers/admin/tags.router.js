@@ -1,7 +1,7 @@
 const tagRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'tagRouter'
 
-const tagController = require ('../controllers/tags.controller')
+const tagController = require ('../../controllers/admin/tags.controller')
 //adalah fungsi dari variabel 'tagController' yang mengimport modul dari lokasi tag.controller
 tagRouter.get('/',tagController.getAlltags)
 //ketika mendapatkan '/' tag dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAlltags dari controller tag.controller untuk melihat semua data tags

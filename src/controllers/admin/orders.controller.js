@@ -1,4 +1,4 @@
-let messages =[
+let orders =[
     {
         id: 1,
         name: 'Leanne Graham'
@@ -9,36 +9,36 @@ let messages =[
 
     }
 ] //// array untuk menyimpan data pengguna
-let countmessage = messages.length
+let countorder = orders.length
 // membuat variabel menghitung jumlah pengguna
 
-const messageModel = require('../models/messages.model')
+const orderModel = require('../../models/orders.model')
 
-exports.getAllmessages = async (req,res)=>{
+exports.getAllorders = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
-const messages = await messageModel.findAll()
+const orders = await orderModel.findAll()
 return res.json({
 // mengembalikan respon json jika berhasil
     succces: true,
     // pesan sukses        
-    maessage : 'List all messages',
-    // pesan cetak string list all messages
-    results : messages
-    // mengembalikan hasil dari array messages
+    maessage : 'List all orders',
+    // pesan cetak string list all orders
+    results : orders
+    // mengembalikan hasil dari array orders
 })
 }
 
-exports.getDetailmessage = async (req,res)=>{
-// mendefininikan fungsi getdatamessage, parameter fungsi arrow untuk mewakili req dan res
+exports.getDetailorder = async (req,res)=>{
+// mendefininikan fungsi getdataorder, parameter fungsi arrow untuk mewakili req dan res
  const id = parseInt(req.params.id)
- const message = await messageModel.findOne(id)
-// melakukan filter message untuk mendapatkan data message dengan ID yang sesuai,dan konfersi id dari string ke nomor
-if(!message){
+ const order = await orderModel.findOne(id)
+// melakukan filter order untuk mendapatkan data order dengan ID yang sesuai,dan konfersi id dari string ke nomor
+if(!order){
 // garding, jika array kosong maka
     return res.status(404).json({
     // kembalikan resposn status 404 ke penguna
         success:false,
-        message:'message not found'
+        message:'order not found'
         // cetak ke penguna
     })
 }
@@ -47,19 +47,19 @@ if(!message){
         success: true,
         message: 'ok',
         // cetak ke penguna
-        results:message
-        // kembalikan data message yg di masukan dari pengguna dengan id
+        results:order
+        // kembalikan data order yg di masukan dari pengguna dengan id
     })    
 }
 
 
-// exports.createmessage = async (req, res) => {
+// exports.createorder = async (req, res) => {
 //     try {
-//         const message = await messageModel.insert(req.body)
+//         const order = await orderModel.insert(req.body)
 //         return res.json({
 //             success: true,
-//             message: 'create message success',
-//             results: message
+//             message: 'create order success',
+//             results: order
 //         })
 //     } catch (err) {
 //         console.log(JSON.stringify(err))
@@ -75,13 +75,13 @@ if(!message){
 //         })
 //     }
 // }
-exports.createmessage = async (req, res) => {
+exports.createorder = async (req, res) => {
 try {
-    const message = await messageModel.insert(req.body);
+    const order = await orderModel.insert(req.body);
     return res.json({
         success: true,
-        message: 'create message success',
-        results: message
+        message: 'create order success',
+        results: order
     });
 } catch (err) {
     console.log(JSON.stringify(err));
@@ -109,44 +109,44 @@ try {
 
 
 
-// exports.updatemessage = (req,res)=>{
-// // mendefininikan fungsi updatemessage, parameter fungsi arrow untuk mewakili req dan res
+// exports.updateorder = (req,res)=>{
+// // mendefininikan fungsi updateorder, parameter fungsi arrow untuk mewakili req dan res
 //     const {id} = req.params
-//     // mendapatkan id dari paramaeter yg di masukan message
+//     // mendapatkan id dari paramaeter yg di masukan order
 //     const {name} = req.body
-//     // mendapatkan name dari body paramaeter yg di masukan message
-//     const messageId = messages.map(message => message.id).indexOf(parseInt(id))
-//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array messages berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
-//     if(messageId === -1){
-//     // apakah messageid bernilai -1
+//     // mendapatkan name dari body paramaeter yg di masukan order
+//     const orderId = orders.map(order => order.id).indexOf(parseInt(id))
+//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array orders berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
+//     if(orderId === -1){
+//     // apakah orderid bernilai -1
 //         return res.status(404).json({
 //         // kembalikan resposn status 404 ke penguna
 //             success: false,
-//             message: 'message not found'
+//             message: 'order not found'
 //             // cetak ke penguna
 //         })
 //     }
-//         messages[messageId].name = name
-//         // jika messageid ditemukan/sama dari parameter yg di masukan pengua
+//         orders[orderId].name = name
+//         // jika orderid ditemukan/sama dari parameter yg di masukan pengua
 //         return res.json({
 //         // kirim respons json ke penguna 
 //             success : true,
 //             message :'ok',
-//             results :messages[messageId]
-//             //tampilkan detail message yg baru di perbaharui
+//             results :orders[orderId]
+//             //tampilkan detail order yg baru di perbaharui
 //         })
  
 // }
 
-exports.updatemessage = async (req, res) => {
+exports.updateorder = async (req, res) => {
 try {
     const {id} = req.params
-    const message = await messageModel.update(req.body);
-    if (message) {
+    const order = await orderModel.update(req.body);
+    if (order) {
         return res.json({
             success: true,
-            message: 'update message success',
-            results: message
+            message: 'update order success',
+            results: order
         });
     } else {
         // menghendel case jika data tidak di temukan
@@ -176,27 +176,27 @@ try {
 }
 
 
-exports.deletemessage = (req,res)=>{
-//// mendefininikan fungsi deletemessage, parameter fungsi arrow untuk mewakili req dan res
+exports.deleteorder = (req,res)=>{
+//// mendefininikan fungsi deleteorder, parameter fungsi arrow untuk mewakili req dan res
 const {id} = req.params
-// mendapatkan id dari paramaeter yg di masukan message
-const message = messages.filter(message =>message.id === parseInt(id))
-// menjalankan filter pada array messages untuk mendapatkan message.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
-if(!message.length){
-// jika data message dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
+// mendapatkan id dari paramaeter yg di masukan order
+const order = orders.filter(order =>order.id === parseInt(id))
+// menjalankan filter pada array orders untuk mendapatkan order.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
+if(!order.length){
+// jika data order dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
         return res.status(404).json({
         //// kembalikan resposn status 404 ke penguna
         success: false,
-        message : 'message not found'
+        message : 'order not found'
         // cetak ke penguna
     })
 }
-        messages = messages.filter(message=>message.id !==parseInt(id))
-        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array messages dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
+        orders = orders.filter(order=>order.id !==parseInt(id))
+        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array orders dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
     return res.json({
     // kirim respons json ke penguna 
         success :true,
-        message: 'hapus data message'
+        message: 'hapus data order'
         // cetak ke penguna
     })
 }

@@ -1,4 +1,4 @@
-let tags =[
+let messages =[
     {
         id: 1,
         name: 'Leanne Graham'
@@ -9,36 +9,36 @@ let tags =[
 
     }
 ] //// array untuk menyimpan data pengguna
-let counttag = tags.length
+let countmessage = messages.length
 // membuat variabel menghitung jumlah pengguna
 
-const tagModel = require('../models/tags.model')
+const messageModel = require('../../models/messages.model')
 
-exports.getAlltags = async (req,res)=>{
+exports.getAllmessages = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
-const tags = await tagModel.findAll()
+const messages = await messageModel.findAll()
 return res.json({
 // mengembalikan respon json jika berhasil
     succces: true,
     // pesan sukses        
-    maessage : 'List all tags',
-    // pesan cetak string list all tags
-    results : tags
-    // mengembalikan hasil dari array tags
+    maessage : 'List all messages',
+    // pesan cetak string list all messages
+    results : messages
+    // mengembalikan hasil dari array messages
 })
 }
 
-exports.getDetailtag = async (req,res)=>{
-// mendefininikan fungsi getdatatag, parameter fungsi arrow untuk mewakili req dan res
+exports.getDetailmessage = async (req,res)=>{
+// mendefininikan fungsi getdatamessage, parameter fungsi arrow untuk mewakili req dan res
  const id = parseInt(req.params.id)
- const tag = await tagModel.findOne(id)
-// melakukan filter tag untuk mendapatkan data tag dengan ID yang sesuai,dan konfersi id dari string ke nomor
-if(!tag){
+ const message = await messageModel.findOne(id)
+// melakukan filter message untuk mendapatkan data message dengan ID yang sesuai,dan konfersi id dari string ke nomor
+if(!message){
 // garding, jika array kosong maka
     return res.status(404).json({
     // kembalikan resposn status 404 ke penguna
         success:false,
-        message:'tag not found'
+        message:'message not found'
         // cetak ke penguna
     })
 }
@@ -47,19 +47,19 @@ if(!tag){
         success: true,
         message: 'ok',
         // cetak ke penguna
-        results:tag
-        // kembalikan data tag yg di masukan dari pengguna dengan id
+        results:message
+        // kembalikan data message yg di masukan dari pengguna dengan id
     })    
 }
 
 
-// exports.createtag = async (req, res) => {
+// exports.createmessage = async (req, res) => {
 //     try {
-//         const tag = await tagModel.insert(req.body)
+//         const message = await messageModel.insert(req.body)
 //         return res.json({
 //             success: true,
-//             message: 'create tag success',
-//             results: tag
+//             message: 'create message success',
+//             results: message
 //         })
 //     } catch (err) {
 //         console.log(JSON.stringify(err))
@@ -75,13 +75,13 @@ if(!tag){
 //         })
 //     }
 // }
-exports.createtag = async (req, res) => {
+exports.createmessage = async (req, res) => {
 try {
-    const tag = await tagModel.insert(req.body);
+    const message = await messageModel.insert(req.body);
     return res.json({
         success: true,
-        message: 'create tag success',
-        results: tag
+        message: 'create message success',
+        results: message
     });
 } catch (err) {
     console.log(JSON.stringify(err));
@@ -109,44 +109,44 @@ try {
 
 
 
-// exports.updatetag = (req,res)=>{
-// // mendefininikan fungsi updatetag, parameter fungsi arrow untuk mewakili req dan res
+// exports.updatemessage = (req,res)=>{
+// // mendefininikan fungsi updatemessage, parameter fungsi arrow untuk mewakili req dan res
 //     const {id} = req.params
-//     // mendapatkan id dari paramaeter yg di masukan tag
+//     // mendapatkan id dari paramaeter yg di masukan message
 //     const {name} = req.body
-//     // mendapatkan name dari body paramaeter yg di masukan tag
-//     const tagId = tags.map(tag => tag.id).indexOf(parseInt(id))
-//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array tags berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
-//     if(tagId === -1){
-//     // apakah tagid bernilai -1
+//     // mendapatkan name dari body paramaeter yg di masukan message
+//     const messageId = messages.map(message => message.id).indexOf(parseInt(id))
+//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array messages berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
+//     if(messageId === -1){
+//     // apakah messageid bernilai -1
 //         return res.status(404).json({
 //         // kembalikan resposn status 404 ke penguna
 //             success: false,
-//             message: 'tag not found'
+//             message: 'message not found'
 //             // cetak ke penguna
 //         })
 //     }
-//         tags[tagId].name = name
-//         // jika tagid ditemukan/sama dari parameter yg di masukan pengua
+//         messages[messageId].name = name
+//         // jika messageid ditemukan/sama dari parameter yg di masukan pengua
 //         return res.json({
 //         // kirim respons json ke penguna 
 //             success : true,
 //             message :'ok',
-//             results :tags[tagId]
-//             //tampilkan detail tag yg baru di perbaharui
+//             results :messages[messageId]
+//             //tampilkan detail message yg baru di perbaharui
 //         })
  
 // }
 
-exports.updatetag = async (req, res) => {
+exports.updatemessage = async (req, res) => {
 try {
     const {id} = req.params
-    const tag = await tagModel.update(req.body);
-    if (tag) {
+    const message = await messageModel.update(req.body);
+    if (message) {
         return res.json({
             success: true,
-            message: 'update tag success',
-            results: tag
+            message: 'update message success',
+            results: message
         });
     } else {
         // menghendel case jika data tidak di temukan
@@ -176,27 +176,27 @@ try {
 }
 
 
-exports.deletetag = (req,res)=>{
-//// mendefininikan fungsi deletetag, parameter fungsi arrow untuk mewakili req dan res
+exports.deletemessage = (req,res)=>{
+//// mendefininikan fungsi deletemessage, parameter fungsi arrow untuk mewakili req dan res
 const {id} = req.params
-// mendapatkan id dari paramaeter yg di masukan tag
-const tag = tags.filter(tag =>tag.id === parseInt(id))
-// menjalankan filter pada array tags untuk mendapatkan tag.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
-if(!tag.length){
-// jika data tag dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
+// mendapatkan id dari paramaeter yg di masukan message
+const message = messages.filter(message =>message.id === parseInt(id))
+// menjalankan filter pada array messages untuk mendapatkan message.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
+if(!message.length){
+// jika data message dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
         return res.status(404).json({
         //// kembalikan resposn status 404 ke penguna
         success: false,
-        message : 'tag not found'
+        message : 'message not found'
         // cetak ke penguna
     })
 }
-        tags = tags.filter(tag=>tag.id !==parseInt(id))
-        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array tags dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
+        messages = messages.filter(message=>message.id !==parseInt(id))
+        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array messages dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
     return res.json({
     // kirim respons json ke penguna 
         success :true,
-        message: 'hapus data tag'
+        message: 'hapus data message'
         // cetak ke penguna
     })
 }

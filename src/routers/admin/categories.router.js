@@ -1,7 +1,7 @@
 const categorieRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'categorieRouter'
 
-const categorieController = require ('../controllers/categorie.controller')
+const categorieController = require ('../../controllers/admin/categorie.controller')
 //adalah fungsi dari variabel 'categorieController' yang mengimport modul dari lokasi categorie.controller
 categorieRouter.get('/',categorieController.getAllcategories)
 //ketika mendapatkan '/' categorie dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllcategories dari controller categorie.controller untuk melihat semua data categories

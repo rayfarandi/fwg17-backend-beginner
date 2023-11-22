@@ -1,7 +1,7 @@
 const userRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'userRouter'
 
-const userController = require ('../controllers/user.controller')
+const userController = require ('../../controllers/admin/user.controller')
 //adalah fungsi dari variabel 'userController' yang mengimport modul dari lokasi user.controller
 userRouter.get('/',userController.getAllUsers)
 //ketika mendapatkan '/' user dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllUsers dari controller user.controller untuk melihat semua data users

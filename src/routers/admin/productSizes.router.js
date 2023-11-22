@@ -1,7 +1,7 @@
 const productSizeRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'productSizeRouter'
 
-const productSizeController = require ('../controllers/productSize.controller')
+const productSizeController = require ('../../controllers/admin/productSize.controller')
 //adalah fungsi dari variabel 'productSizeController' yang mengimport modul dari lokasi productSize.controller
 productSizeRouter.get('/',productSizeController.getAllproductSizes)
 //ketika mendapatkan '/' productSize dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllproductSizes dari controller productSize.controller untuk melihat semua data productSizes

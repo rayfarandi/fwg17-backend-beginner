@@ -12,7 +12,7 @@ let orderDetails =[
 let countorderDetail = orderDetails.length
 // membuat variabel menghitung jumlah pengguna
 
-const orderDetailModel = require('../models/orderDetails.model')
+const orderDetailModel = require('../../models/orderDetails.model')
 
 exports.getAllorderDetails = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res

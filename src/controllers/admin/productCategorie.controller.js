@@ -12,7 +12,7 @@ let productCategories =[
 let countproductpCategorie = productCategories.length
 // membuat variabel menghitung jumlah pengguna
 
-const productCategorieModel = require('../models/productCategories.model')
+const productCategorieModel = require('../../models/productCategories.model')
  
 exports.getAllproductCategories = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res

@@ -1,7 +1,7 @@
 const promoRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'promoRouter'
 
-const promoController = require ('../controllers/promos.controller')
+const promoController = require ('../../controllers/admin/promos.controller')
 //adalah fungsi dari variabel 'promoController' yang mengimport modul dari lokasi promo.controller
 promoRouter.get('/',promoController.getAllpromos)
 //ketika mendapatkan '/' promo dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllpromos dari controller promo.controller untuk melihat semua data promos

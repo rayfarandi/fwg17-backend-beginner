@@ -1,7 +1,7 @@
 const productTagRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'productTagRouter'
 
-const productTagController = require ('../controllers/productTags.controller')
+const productTagController = require ('../../controllers/admin/productTags.controller')
 //adalah fungsi dari variabel 'productTagController' yang mengimport modul dari lokasi productTag.controller
 productTagRouter.get('/',productTagController.getAllproductTags)
 //ketika mendapatkan '/' productTag dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllproductTags dari controller productTag.controller untuk melihat semua data productTags

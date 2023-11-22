@@ -1,4 +1,4 @@
-let orders =[
+let tags =[
     {
         id: 1,
         name: 'Leanne Graham'
@@ -9,36 +9,36 @@ let orders =[
 
     }
 ] //// array untuk menyimpan data pengguna
-let countorder = orders.length
+let counttag = tags.length
 // membuat variabel menghitung jumlah pengguna
 
-const orderModel = require('../models/orders.model')
+const tagModel = require('../../models/tags.model')
 
-exports.getAllorders = async (req,res)=>{
+exports.getAlltags = async (req,res)=>{
 // mendefinisikan fungsi untuk mendapatkan semua penguna parameter fungsi arrow untuk mewakili req dan res
-const orders = await orderModel.findAll()
+const tags = await tagModel.findAll()
 return res.json({
 // mengembalikan respon json jika berhasil
     succces: true,
     // pesan sukses        
-    maessage : 'List all orders',
-    // pesan cetak string list all orders
-    results : orders
-    // mengembalikan hasil dari array orders
+    maessage : 'List all tags',
+    // pesan cetak string list all tags
+    results : tags
+    // mengembalikan hasil dari array tags
 })
 }
 
-exports.getDetailorder = async (req,res)=>{
-// mendefininikan fungsi getdataorder, parameter fungsi arrow untuk mewakili req dan res
+exports.getDetailtag = async (req,res)=>{
+// mendefininikan fungsi getdatatag, parameter fungsi arrow untuk mewakili req dan res
  const id = parseInt(req.params.id)
- const order = await orderModel.findOne(id)
-// melakukan filter order untuk mendapatkan data order dengan ID yang sesuai,dan konfersi id dari string ke nomor
-if(!order){
+ const tag = await tagModel.findOne(id)
+// melakukan filter tag untuk mendapatkan data tag dengan ID yang sesuai,dan konfersi id dari string ke nomor
+if(!tag){
 // garding, jika array kosong maka
     return res.status(404).json({
     // kembalikan resposn status 404 ke penguna
         success:false,
-        message:'order not found'
+        message:'tag not found'
         // cetak ke penguna
     })
 }
@@ -47,19 +47,19 @@ if(!order){
         success: true,
         message: 'ok',
         // cetak ke penguna
-        results:order
-        // kembalikan data order yg di masukan dari pengguna dengan id
+        results:tag
+        // kembalikan data tag yg di masukan dari pengguna dengan id
     })    
 }
 
 
-// exports.createorder = async (req, res) => {
+// exports.createtag = async (req, res) => {
 //     try {
-//         const order = await orderModel.insert(req.body)
+//         const tag = await tagModel.insert(req.body)
 //         return res.json({
 //             success: true,
-//             message: 'create order success',
-//             results: order
+//             message: 'create tag success',
+//             results: tag
 //         })
 //     } catch (err) {
 //         console.log(JSON.stringify(err))
@@ -75,13 +75,13 @@ if(!order){
 //         })
 //     }
 // }
-exports.createorder = async (req, res) => {
+exports.createtag = async (req, res) => {
 try {
-    const order = await orderModel.insert(req.body);
+    const tag = await tagModel.insert(req.body);
     return res.json({
         success: true,
-        message: 'create order success',
-        results: order
+        message: 'create tag success',
+        results: tag
     });
 } catch (err) {
     console.log(JSON.stringify(err));
@@ -109,44 +109,44 @@ try {
 
 
 
-// exports.updateorder = (req,res)=>{
-// // mendefininikan fungsi updateorder, parameter fungsi arrow untuk mewakili req dan res
+// exports.updatetag = (req,res)=>{
+// // mendefininikan fungsi updatetag, parameter fungsi arrow untuk mewakili req dan res
 //     const {id} = req.params
-//     // mendapatkan id dari paramaeter yg di masukan order
+//     // mendapatkan id dari paramaeter yg di masukan tag
 //     const {name} = req.body
-//     // mendapatkan name dari body paramaeter yg di masukan order
-//     const orderId = orders.map(order => order.id).indexOf(parseInt(id))
-//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array orders berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
-//     if(orderId === -1){
-//     // apakah orderid bernilai -1
+//     // mendapatkan name dari body paramaeter yg di masukan tag
+//     const tagId = tags.map(tag => tag.id).indexOf(parseInt(id))
+//     //mengunakan metode map dan indexOf untuk mencari indeks pengguna dalam array tags berdasarkan id dan di conversi menjadi angka yang diberikan dari penguna
+//     if(tagId === -1){
+//     // apakah tagid bernilai -1
 //         return res.status(404).json({
 //         // kembalikan resposn status 404 ke penguna
 //             success: false,
-//             message: 'order not found'
+//             message: 'tag not found'
 //             // cetak ke penguna
 //         })
 //     }
-//         orders[orderId].name = name
-//         // jika orderid ditemukan/sama dari parameter yg di masukan pengua
+//         tags[tagId].name = name
+//         // jika tagid ditemukan/sama dari parameter yg di masukan pengua
 //         return res.json({
 //         // kirim respons json ke penguna 
 //             success : true,
 //             message :'ok',
-//             results :orders[orderId]
-//             //tampilkan detail order yg baru di perbaharui
+//             results :tags[tagId]
+//             //tampilkan detail tag yg baru di perbaharui
 //         })
  
 // }
 
-exports.updateorder = async (req, res) => {
+exports.updatetag = async (req, res) => {
 try {
     const {id} = req.params
-    const order = await orderModel.update(req.body);
-    if (order) {
+    const tag = await tagModel.update(req.body);
+    if (tag) {
         return res.json({
             success: true,
-            message: 'update order success',
-            results: order
+            message: 'update tag success',
+            results: tag
         });
     } else {
         // menghendel case jika data tidak di temukan
@@ -176,27 +176,27 @@ try {
 }
 
 
-exports.deleteorder = (req,res)=>{
-//// mendefininikan fungsi deleteorder, parameter fungsi arrow untuk mewakili req dan res
+exports.deletetag = (req,res)=>{
+//// mendefininikan fungsi deletetag, parameter fungsi arrow untuk mewakili req dan res
 const {id} = req.params
-// mendapatkan id dari paramaeter yg di masukan order
-const order = orders.filter(order =>order.id === parseInt(id))
-// menjalankan filter pada array orders untuk mendapatkan order.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
-if(!order.length){
-// jika data order dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
+// mendapatkan id dari paramaeter yg di masukan tag
+const tag = tags.filter(tag =>tag.id === parseInt(id))
+// menjalankan filter pada array tags untuk mendapatkan tag.id yang hanya berisi id pengguna,mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan 
+if(!tag.length){
+// jika data tag dari pengguna tidak di temukan, mengunakan metode garding,melakukan negasi jika array nya kosong
         return res.status(404).json({
         //// kembalikan resposn status 404 ke penguna
         success: false,
-        message : 'order not found'
+        message : 'tag not found'
         // cetak ke penguna
     })
 }
-        orders = orders.filter(order=>order.id !==parseInt(id))
-        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array orders dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
+        tags = tags.filter(tag=>tag.id !==parseInt(id))
+        // mengkonversi nilai id yg di terima dari parameter ke angka, lalu di bandingkan , menjalankan filter di array tags dan jika  menemuka id yg sama makan akan menghilangkan id tersebut
     return res.json({
     // kirim respons json ke penguna 
         success :true,
-        message: 'hapus data order'
+        message: 'hapus data tag'
         // cetak ke penguna
     })
 }

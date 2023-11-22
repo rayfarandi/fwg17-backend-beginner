@@ -1,7 +1,7 @@
 const productCategorieRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'productCategorieRouter'
 
-const productCategorieController = require ('../controllers/productCategorie.controller')
+const productCategorieController = require ('../../controllers/admin/productCategorie.controller')
 //adalah fungsi dari variabel 'productCategorieController' yang mengimport modul dari lokasi productCategorie.controller
 productCategorieRouter.get('/',productCategorieController.getAllproductCategories)
 //ketika mendapatkan '/' productCategorie dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllproductCategories dari controller productCategorie.controller untuk melihat semua data productCategories

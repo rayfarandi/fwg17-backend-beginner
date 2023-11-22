@@ -1,7 +1,7 @@
 const orderRouter = require('express').Router()
 // untuk membuat route di modul express dan di simpan di variabel 'orderRouter'
 
-const orderController = require ('../controllers/orders.controller')
+const orderController = require ('../../controllers/admin/orders.controller')
 //adalah fungsi dari variabel 'orderController' yang mengimport modul dari lokasi order.controller
 orderRouter.get('/',orderController.getAllorders)
 //ketika mendapatkan '/' order dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllorders dari controller order.controller untuk melihat semua data orders

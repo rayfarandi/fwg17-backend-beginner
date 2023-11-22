@@ -1,4 +1,4 @@
-const productModel = require('../models/products.model')
+const productModel = require('../../models/products.model')
  
 exports.getAllproducts = async (req,res)=>{
    const {search,sortBy,order,page} = req.query
