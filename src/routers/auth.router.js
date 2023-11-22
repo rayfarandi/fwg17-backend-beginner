@@ -6,6 +6,6 @@ const authController = require('../controllers/auth.controller')
 
 authRouter.post('/login',authController.login)
 //ketika mendapatkan '/' user dari http dengan permintaan post, dan akan menjalankan fungsi authRouter dari authController.login
-
+authRouter.post('/register',authController.register)
 module.exports = authRouter
 // membuat modul authRouter yg dapat di gunakan fungsinya

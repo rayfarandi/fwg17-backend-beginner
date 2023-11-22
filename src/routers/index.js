@@ -1,7 +1,8 @@
 const router = require('express').Router()
+const autMiddleware = require('../middlewares/auth.middleware')
 
 router.use('/auth',require('./auth.router'))
-router.use('/admin',require('./admin'))
+router.use('/admin',autMiddleware,require('./admin'))
 
 // mencoba memakai aksses admin
 // router.use('/users',require('./admin/users.router.js'))

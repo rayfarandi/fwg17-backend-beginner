@@ -13,7 +13,12 @@ exports.findOne = async (id)=>{
     const {rows} = await db.query(sql, values)
     return rows[0]
 } 
-
+exports.findOneByEmail = async (email)=>{
+    const sql = `SELECT * FROM "users" WHERE email = $1`
+    const values = [email]
+    const {rows} = await db.query(sql, values)
+    return rows[0]
+}
 exports.insert = async (data)=>{
     const sql = `INSERT INTO "users" 
     ("fullName","email","password","address","picture","phoneNumber","role")
