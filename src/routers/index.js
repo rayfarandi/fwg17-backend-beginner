@@ -1,8 +1,9 @@
 const router = require('express').Router()
 const autMiddleware = require('../middlewares/auth.middleware')
+const roleCheckMiddleware = require('../middlewares/roleCheck.middleware')
 
 router.use('/auth',require('./auth.router'))
-router.use('/admin',autMiddleware,require('./admin'))
+router.use('/admin',autMiddleware,roleCheckMiddleware('admin'),require('./admin'))
 
 // mencoba memakai aksses admin
 // router.use('/users',require('./admin/users.router.js'))
