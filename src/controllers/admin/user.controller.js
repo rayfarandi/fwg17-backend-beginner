@@ -1,4 +1,5 @@
 const userModel = require('../../models/users.model')
+const argon2 = require('argon2')
  
 exports.getAllUsers = async (req, res) => {
     const users = await userModel.findAll();
@@ -93,6 +94,44 @@ exports.createUser = async (req, res) => {
 
 
 
+exports.updateUser = async (req, res) => {
+    try {
+        const { id } = req.params;
+        const updatedUser = await userModel.update(id, req.body);
+
+        // dihash di sini
+        if (req.body.password) {
+            req.body.password = await argon2.hash(req.body.password);
+        }
+
+        return res.json({
+            success: true,
+            message: 'User updated successfully',
+            results: updatedUser
+        });
+    } catch (err) {
+        console.error(JSON.stringify(err));
+
+        switch (err.code) {
+            case "42601":
+                return res.status(400).json({
+                    success: false,
+                    message: 'Fill in the correct data'
+                });
+            case "22P02":
+                const errorMessage = 'Key id not found';
+                return res.status(400).json({
+                    success: false,
+                    message: errorMessage
+                });
+            default:
+                return res.status(500).json({
+                    success: false,
+                    message: 'Internal server error'
+                });
+        }
+    }
+};
 
 // exports.updateUser = async (req, res) => {
 //     const {id} = req.params
@@ -109,7 +148,9 @@ exports.createUser = async (req, res) => {
 //     try {
 //         const { id } = req.params;
 //         const user = await userModel.update(id, req.body);
-
+//         if (req.body.password) {
+//             req.body.password = argon2.hash(req.body.password);
+//         }
 //         return res.json({
 //             success: true,
 //             message: 'ok',
@@ -139,39 +180,40 @@ exports.createUser = async (req, res) => {
 //     }
 // }
 //tes
-exports.updateUser = async (req, res) => {
-    try {
-        const { id } = req.params;
-        const user = await userModel.update(id, req.body);
+//hasil benar sebelum nya
+// exports.updateUser = async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const user = await userModel.update(id, req.body);
 
-        return res.json({
-            success: true,
-            message: 'ok',
-            results: user
-        });
-    } catch (err) {
-        console.error(JSON.stringify(err));
+//         return res.json({
+//             success: true,
+//             message: 'ok',
+//             results: user
+//         });
+//     } catch (err) {
+//         console.error(JSON.stringify(err));
 
-        switch (err.code) {
-            case "42601":
-                return res.status(400).json({
-                    success: false,
-                    message: `Fill in the correct data`
-                })
-            case "22P02":
-                const errorMessage = `Key id not found`;
-                return res.status(400).json({
-                    success: false,
-                    message: errorMessage
-                })
-            default:
-                return res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                })
-        }
-    }
-}
+//         switch (err.code) {
+//             case "42601":
+//                 return res.status(400).json({
+//                     success: false,
+//                     message: `Fill in the correct data`
+//                 })
+//             case "22P02":
+//                 const errorMessage = `Key id not found`;
+//                 return res.status(400).json({
+//                     success: false,
+//                     message: errorMessage
+//                 })
+//             default:
+//                 return res.status(500).json({
+//                     success: false,
+//                     message: 'Internal server error'
+//                 })
+//         }
+//     }
+// }
 
 
 exports.deleteUser = async (req,res)=>{
