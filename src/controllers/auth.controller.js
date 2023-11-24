@@ -66,6 +66,15 @@ exports.login = async (req,res)=>{
     // }
 }
 
+// exports.logout = async (req,res)=>{
+//     const cookies = req.headers.authorization
+//     cookies.destroy()
+//     res.json({
+//         success: true,
+//         message: 'Logout successful',
+//     })
+// }
+
 exports.register = async (req,res)=>{
     try{
         const {fullName,email,password} = req.body

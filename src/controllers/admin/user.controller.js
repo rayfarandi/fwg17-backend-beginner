@@ -1,5 +1,5 @@
 const userModel = require('../../models/users.model')
-const argon2 = require('argon2')
+const argon = require('argon2')
  
 exports.getAllUsers = async (req, res) => {
     const users = await userModel.findAll();
@@ -37,51 +37,102 @@ exports.getDetailUser = async (req,res)=>{
 }
 
 
-exports.createUser = async (req, res) => {
-    try {
-        const user = await userModel.insert(req.body)
-        return res.json({
-            success: true,
-            message: 'create user success',
-            results: user
-        })
-    } catch (err) {
-        console.log(JSON.stringify(err))
-        if(err.code === "23502"){
-            return res.status(400).json({
-                success: false,
-                message: `${err.column} cannot be empty`
-        })
-    }
-        return res.status(400).json({
-            success: false,
-            message: 'error'
-        })
-    }
-}
-// exports.createUser = async (req, res) => {
+// sebelum memakai switch  exports.createUser
+//exports.createUser = async (req, res) => {
 //     try {
-//         const user = await userModel.insert(req.body);
+//         if (req.body.password){
+//             req.body.password = await argon.hash(req.body.pa)
+//         }
+//         const user = await userModel.insert(req.body)
 //         return res.json({
 //             success: true,
 //             message: 'create user success',
 //             results: user
 //         })
 //     } catch (err) {
-//         console.log(JSON.stringify(err));
+//         console.log(JSON.stringify(err))
+//         if(err.code === "23502"){
+//             return res.status(400).json({
+//                 success: false,
+//                 message: `${err.column} cannot be empty`
+//         })
+//     }
+//         return res.status(400).json({
+//             success: false,
+//             message: 'error'
+//         })
+//     }
+// }
+
+exports.createUser = async (req, res) => {
+    try {
+        if (req.body.password){
+            req.body.password = await argon.hash(req.body.password)
+        }
+        const user = await userModel.insert(req.body);
+        return res.json({
+            success: true,
+            message: 'create user success',
+            results: user
+        })
+    } catch (err) {
+        console.log(JSON.stringify(err));
+
+        switch (err.code) {
+            case "23502":
+                return res.status(400).json({
+                    success: false,
+                    message: `${err.column} cannot be empty`
+                })
+                case "23505":
+                    const errorMessage = err.column = 'email already exists'
+                    return res.status(400).json({
+                        success: false,
+                        message: errorMessage
+                    })
+            default:
+                return res.status(500).json({
+                    success: false,
+                    message: 'Internal server error'
+                })
+        }
+    }
+}
+
+
+
+
+// mencoba argon sendiri,berhasil tp masih kurang tepat
+// exports.updateUser = async (req, res) => {
+//     try {
+//         const { id } = req.params
+//         const updatedUser = await userModel.update(id, req.body)
+
+//         // dihash di sini
+//         if (req.body.password) {
+//             req.body.password = await argon.hash(req.body.password)
+//         }
+
+//         return res.json({
+//             success: true,
+//             message: 'User updated successfully',
+//             results: updatedUser
+//         })
+//     } catch (err) {
+//         console.error(JSON.stringify(err))
 
 //         switch (err.code) {
-//             case "23502":
+//             case "42601":
 //                 return res.status(400).json({
 //                     success: false,
-//                     message: `${err.column} cannot be empty`
+//                     message: 'Fill in the correct data'
+//                 });
+//             case "22P02":
+//                 const errorMessage = 'Key id not found';
+//                 return res.status(400).json({
+//                     success: false,
+//                     message: errorMessage
 //                 })
-//                 case "23505":
-//                     const errorMessage = err.column = 'email already exists'
-//                     return res.status(400).json({
-//                         success: false,
-//                         message: errorMessage
-//                     })
 //             default:
 //                 return res.status(500).json({
 //                     success: false,
@@ -92,34 +143,33 @@ exports.createUser = async (req, res) => {
 // }
 
 
-
-
 exports.updateUser = async (req, res) => {
     try {
         const { id } = req.params;
-        const updatedUser = await userModel.update(id, req.body);
-
-        // dihash di sini
-        if (req.body.password) {
-            req.body.password = await argon2.hash(req.body.password);
+        
+        const data = {
+            ...req.body
         }
-
+        if (req.body.password) {
+            data.password = await argon.hash(req.body.password);
+        }
+        const user = await userModel.update(id, data)
         return res.json({
             success: true,
-            message: 'User updated successfully',
-            results: updatedUser
+            message: 'ok',
+            results: user
         });
     } catch (err) {
         console.error(JSON.stringify(err));
 
         switch (err.code) {
-            case "42601":
+            case "42601": // jika tidak di isi apa2
                 return res.status(400).json({
                     success: false,
-                    message: 'Fill in the correct data'
+                    message: `fill in the  correct data`
                 });
             case "22P02":
-                const errorMessage = 'Key id not found';
+                const errorMessage = `key id not found`; // jika tidak mengisi id
                 return res.status(400).json({
                     success: false,
                     message: errorMessage
@@ -131,89 +181,7 @@ exports.updateUser = async (req, res) => {
                 });
         }
     }
-};
-
-// exports.updateUser = async (req, res) => {
-//     const {id} = req.params
-//     const user = await userModel.update(id, req.body)
-    
-//     return res.json({
-//         succces: true,
-//         message: 'ok',
-//         results: user
-//     })
-// }
-
-// exports.updateUser = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const user = await userModel.update(id, req.body);
-//         if (req.body.password) {
-//             req.body.password = argon2.hash(req.body.password);
-//         }
-//         return res.json({
-//             success: true,
-//             message: 'ok',
-//             results: user
-//         });
-//     } catch (err) {
-//         console.error(JSON.stringify(err));
-
-//         switch (err.code) {
-//             case "42601": // jika tidak di isi apa2
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: `fill in the  correct data`
-//                 });
-//             case "22P02":
-//                 const errorMessage = `key id not found`; // jika tidak mengisi id
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: errorMessage
-//                 });
-//             default:
-//                 return res.status(500).json({
-//                     success: false,
-//                     message: 'Internal server error'
-//                 });
-//         }
-//     }
-// }
-//tes
-//hasil benar sebelum nya
-// exports.updateUser = async (req, res) => {
-//     try {
-//         const { id } = req.params;
-//         const user = await userModel.update(id, req.body);
-
-//         return res.json({
-//             success: true,
-//             message: 'ok',
-//             results: user
-//         });
-//     } catch (err) {
-//         console.error(JSON.stringify(err));
-
-//         switch (err.code) {
-//             case "42601":
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: `Fill in the correct data`
-//                 })
-//             case "22P02":
-//                 const errorMessage = `Key id not found`;
-//                 return res.status(400).json({
-//                     success: false,
-//                     message: errorMessage
-//                 })
-//             default:
-//                 return res.status(500).json({
-//                     success: false,
-//                     message: 'Internal server error'
-//                 })
-//         }
-//     }
-// }
+}
 
 
 exports.deleteUser = async (req,res)=>{

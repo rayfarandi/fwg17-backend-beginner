@@ -1,5 +1,5 @@
 const db = require('../lib/db.lib')
-const argon2 = require('argon2')
+const argon = ('argon2')
 
 exports.findAll = async ()=>{
     const sql = `SELECT * FROM "users"`
@@ -36,37 +36,14 @@ exports.update = async (id,data) => {
   const values = []
   values.push(parseInt(id))
   for (let item in data){
-    values.push(await argon2.hash(data[item]))
+    // values.push(await argon.hash(data[item]))
+    values.push(await(data[item]))
     column.push(`"${item}"=$${values.length}`)
   }
     const sql = `UPDATE "users" SET ${column.join(', ')}, "update_at" = now() WHERE id=$1 RETURNING *`
     const {rows} = await db.query(sql, values)
     return rows[0]
 }
-
-// exports.update = async (id, data) => {
-//     try {
-//         const column = [];
-//         const values = [parseInt(id)];
-
-//         // if (data.password) {
-//         //     data.password = await argon2.hash(data.password);
-//         // }
-
-//         for (let item in data) {
-//             values.push(data[item]);
-//             column.push(`"${item}"=$${values.length}`);
-//         }
-
-//         const sql = `UPDATE "users" SET ${column.join(', ')}, "update_at" = now() WHERE id=$1 RETURNING *`;
-//         const { rows } = await db.query(sql, values);
-//         return rows[0];
-//     } catch (error) {
-//         console.error('Error updating user:', error);
-//         throw error;
-//     }
-// }
-
 
 
 exports.delete = async(id) =>{
