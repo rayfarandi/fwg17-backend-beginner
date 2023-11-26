@@ -61,6 +61,9 @@ exports.getDetailproduct = async (req,res)=>{
 // }
 exports.createproduct = async (req, res) => {
     try {
+        if (req.file) {
+            req.body.image = req.file.filename;
+        }
         const product = await productModel.insert(req.body);
         return res.json({
             success: true,
@@ -116,9 +119,13 @@ exports.createproduct = async (req, res) => {
      
 // }
 
+// mencoba menganti
 exports.updateproduct = async (req, res) => {
     try {
         const {id} = req.params
+        if(req.file){
+            req.body.image = req.file.filename
+        }
         const product = await productModel.update(id,req.body)
             return res.json({
                 success: true,
@@ -149,6 +156,19 @@ exports.updateproduct = async (req, res) => {
     }
 }
 
+// exports.updateproduct = async (req, res) => {
+//         const {id} = req.params
+//         if(req.file){
+//             req.body.image = req.file.filename
+//         }
+//         const product = await productModel.update(id,req.body)
+//             return res.json({
+//                 success: true,
+//                 message: 'update product success',
+//                 results: product
+//             })
+        
+// }
 
 exports.deleteproduct = async (req,res)=>{
         const {id} =req.params
