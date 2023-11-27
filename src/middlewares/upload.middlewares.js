@@ -10,18 +10,24 @@ const storage = (dest,filename)=> multer.diskStorage({
             'image/jpeg': '.jpg',
             'image/png': '.png' 
         }
-        if(!filename){
-            filename = req.params.id
-        }
+        // if(!filename && req.params.id){
+        //     filename = req.params.id
+        // }else if(!filename){
+        //     filename = new Date().getTime()
+        // }
+        filename = new Date().getTime()
+        //filename = uuidv4()
         cb(null,`${filename}${extention[file.mimetype]}`)
     }
 })
 const uploadMiddlware = (type, file)=>{
     const processUpload = multer({
-        storage:storage(type, file)
+        storage:storage(type, file),
+        limits: {
+            fileSize: 2*1024 * 1024
+        }
     })
     return processUpload
 } 
-
 
 module.exports = uploadMiddlware

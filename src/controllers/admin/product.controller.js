@@ -1,16 +1,35 @@
 const productModel = require('../../models/products.model')
- 
+const uploadMiddlware = require('../../middlewares/upload.middlewares')
+const upload = uploadMiddlware('products').single('image')
+const fs = require('fs/promises')
+const path =require('path')
+
 exports.getAllproducts = async (req,res)=>{
-   const {search,sortBy,order,page} = req.query
+try{const {search,sortBy,order,page} = req.query
 
    const products = await productModel.findAll(search,sortBy,order,page)
-   
+   if (products.length <1){
+    throw new Error('no data')
+   }
+
    return res.json({
     success :true,
     message : 'list All product',
     results : products
     })
+}catch(err){
+    if (err.message === 'no data'){
+        return res.status(404).json({
+            success: false,
+            message: 'tidak ada data'
+        })
+    }console.log(err)
+    return res.json({
+        success: false,
+        message: 'internal server error'
+    })
 }
+    }
 
 exports.getDetailproduct = async (req,res)=>{
 // mendefininikan fungsi getdataproduct, parameter fungsi arrow untuk mewakili req dan res
@@ -39,7 +58,10 @@ exports.getDetailproduct = async (req,res)=>{
 
 // exports.createproduct = async (req, res) => {
 //     try {
-//         const product = await productModel.insert(req.body)
+//         if (req.file) {
+//             req.body.image = req.file.filename
+//         }
+//         const product = await productModel.insert(req.body);
 //         return res.json({
 //             success: true,
 //             message: 'create product success',
@@ -47,45 +69,40 @@ exports.getDetailproduct = async (req,res)=>{
 //         })
 //     } catch (err) {
 //         console.log(JSON.stringify(err))
-//         if(err.code === "23502"){
-//             return res.status(400).json({
-//                 success: false,
-//                 message: `${err.column} cannot be empty`
-//         })
-//     }
-//         return res.status(400).json({
-//             success: false,
-//             message: 'error'
-//         })
+
+//         switch (err.code) {
+//             case "23502":
+//                 return res.status(400).json({
+//                     success: false,
+//                     message: `${err.column} cannot be empty`
+//                 })
+//             default:
+//                 return res.status(500).json({
+//                     success: false,
+//                     message: 'Internal server error'
+//                 })
+//         }
 //     }
 // }
-exports.createproduct = async (req, res) => {
-    try {
+exports.createproduct= async (req,res)=>{
+    upload(req,res, async(err)=>{
+        if(err){
+            return res.status(400).json({
+                success: false,
+                message: err.message
+            })
+        }
         if (req.file) {
-            req.body.image = req.file.filename;
-        }
-        const product = await productModel.insert(req.body);
-        return res.json({
-            success: true,
-            message: 'create product success',
-            results: product
-        })
-    } catch (err) {
-        console.log(JSON.stringify(err));
+            req.body.image = req.file.filename
+            }
+            const product = await productModel.insert(req.body)
 
-        switch (err.code) {
-            case "23502":
-                return res.status(400).json({
-                    success: false,
-                    message: `${err.column} cannot be empty`
-                })
-            default:
-                return res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                })
-        }
-    }
+            return res.json({
+                success: true,
+                message: 'create success',
+                results: product
+            })
+    })
 }
 
 
@@ -123,17 +140,25 @@ exports.createproduct = async (req, res) => {
 exports.updateproduct = async (req, res) => {
     try {
         const {id} = req.params
+        const data = await productModel.findOne(id)
+        if(!data){
+            throw new Error('not found')
+        }
         if(req.file){
+            if(data.image){
+                const uploadLocation = path.join(global.path,'uploads','products',data.image)
+                fs.rm(uploadLocation)
+            }
             req.body.image = req.file.filename
         }
-        const product = await productModel.update(id,req.body)
+        const product = await productModel.update(id, req.body)
             return res.json({
                 success: true,
                 message: 'update product success',
                 results: product
             })
         }catch (err) {
-        console.log(JSON.stringify(err))
+        // console.log(JSON.stringify(err))
 
         switch (err.code) {
             case "42601": // jika tidak di isi apa2
@@ -171,12 +196,14 @@ exports.updateproduct = async (req, res) => {
 // }
 
 exports.deleteproduct = async (req,res)=>{
-        const {id} =req.params
-        const product = await productModel.delete(id)
-    
+        const deleted = await productModel.delete(req.params.id)  
+        if(deleted.image){
+            const uploadLocation = path.join(global.path, 'uploads','products', deleted.image)
+            await fs.rm(uploadLocation)
+        }  
         return res.json({
             success :true,
             message : 'delete succes',
-            results : product
+            results : deleted
         })
 }

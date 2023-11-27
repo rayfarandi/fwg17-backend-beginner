@@ -2,6 +2,8 @@ require('dotenv').config({
     path: './.env'
 })
 
+global.path = __dirname
+
 const express =  require('express')
 // sebuah variabel yang berisi package dari express, yg di buatkan fungsi express
 const cors = require('cors')
