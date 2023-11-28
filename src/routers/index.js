@@ -5,6 +5,13 @@ const roleCheckMiddleware = require('../middlewares/roleCheck.middleware')
 router.use('/auth',require('./auth.router'))
 router.use('/admin',autMiddleware,roleCheckMiddleware('admin'),require('./admin'))
 
+// memberikan akses public
+router.use('/public',require('./public'))
+
+//memberikan akses customer
+router.use('/auth',require('./auth.router'))
+router.use('/customer',autMiddleware,roleCheckMiddleware('customer'),require('./customer'))
+
 // mencoba memakai aksses admin
 // router.use('/users',require('./admin/users.router.js'))
 

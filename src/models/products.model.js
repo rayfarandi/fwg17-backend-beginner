@@ -118,6 +118,25 @@ exports.findOne = async (id)=>{
     return rows[0]
 } 
 
+exports.countAll = async (keyword='')=>{
+    // const visibleColumn = ['id', 'created_at', 'name', 'basePrice']
+    // const allowOrder = ['asc', 'desc']
+    //const limit = 4;
+    // const offset = (page - 1) * limit
+
+    // sortBy = visibleColumn.includes(sortBy) ? `"p"."${sortBy}"` : '"p"."id"'
+    // order = allowOrder.includes(order) ? order : 'asc'
+
+    const sql = `
+    SELECT count(id) as counts
+       
+    FROM "products"
+    WHERE "name" ILIKE $1`
+    const values = [`%${keyword}%`]
+    const { rows } = await db.query(sql, values)
+    return rows[0].counts
+}
+
 exports.insert = async (data)=>{
     const sql = `INSERT INTO "products" 
     ("name","description","basePrice","image","discount","isRecommended")

@@ -25,6 +25,14 @@ const uploadMiddlware = (type, file)=>{
         storage:storage(type, file),
         limits: {
             fileSize: 2*1024 * 1024
+        },
+        fileFilter: (req,file,cb)=>{
+            const extention = ['image/jpeg','image/png','image/jpg']
+            if(!extention.includes(file.mimetype)){
+                cb(new Error('extention_issu'),false)
+            }else{
+                cb(null, true)
+            }
         }
     })
     return processUpload

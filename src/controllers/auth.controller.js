@@ -77,16 +77,19 @@ exports.login = async (req,res)=>{
 
 exports.register = async (req,res)=>{
     try{
-        const {fullName,email,password} = req.body
+        const {fullName,email,password,role='customer'} = req.body
         const hashed = await argon.hash(password)
         const user = userModel.insert({
             fullName,
             email,
-            password : hashed
+            password : hashed,
+            role,
         })
+        const users = {fullName,email}
         return res.json({
             succces: true,
-            message: 'registrasi succesfully'
+            message: 'registrasi succesfully',
+            results: users
         })
     }catch(err){
         console.log(err)
