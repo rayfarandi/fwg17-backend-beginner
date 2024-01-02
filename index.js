@@ -21,6 +21,7 @@ app.use(cors())
 
 app.use('/',require('./src/routers'))
 // secara otomatis akan melakukan import ke folder routers dengan nama index.js
+app.use('/uploads/products',express.static('uploads/products')) //menambahkan express static untuk image
 
 app.get('/',(req,res)=>{
 // ketika mencoba get dari http untuk path '/' , yang akan mengembalikan req/request dan res/respons

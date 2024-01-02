@@ -1,6 +1,7 @@
 const userModel = require('../models/users.model')
 const argon = require('argon2')
 const jwt = require('jsonwebtoken')
+const { errorHandler } = require('../moduls/handling')
 
 exports.login = async (req,res)=>{
     try{
@@ -91,11 +92,38 @@ exports.register = async (req,res)=>{
             message: 'registrasi succesfully',
             results: users
         })
-    }catch(err){
-        console.log(err)
-        return res.status(500).json({
-            succces: false,
-            message: 'internal server error'
-        })
     }
+    catch(err){
+        errorHandler(err,res)
+    }
+    // catch(err){
+    //     console.log(err)
+    //     return res.status(500).json({
+    //         succces: false,
+    //         message: 'internal server error'
+    //     })
+    // }
+    // catch (err) {
+    //     console.log(JSON.stringify(err))
+    //     console.log(err)
+
+    //     switch (err.code) {
+    //         case "23502":
+    //             return res.status(400).json({
+    //                 success: false,
+    //                 message: `${err.column} cannot be empty`
+    //             })
+    //             case "23505":
+    //                 const errorMessage = err.column = 'email already exists'
+    //                 return res.status(400).json({
+    //                     success: false,
+    //                     message: errorMessage
+    //                 })
+    //         default:
+    //             return res.status(500).json({
+    //                 success: false,
+    //                 message: 'Internal server error'
+    //             })
+    //     }
+    // }
 }

@@ -1,46 +1,76 @@
 const productModel = require('../../models/products.model')
 const uploadMiddlware = require('../../middlewares/upload.middlewares')
 const upload = uploadMiddlware('products').single('image')
+const errorHandler = require('../../moduls/handling')
 const fs = require('fs/promises')
 const path =require('path')
 
-exports.getAllproducts = async (req,res)=>{
-try{const {search,sortBy,order,page=1} = req.query
-const count = parseInt(await productModel.countAll(search))
-   const products = await productModel.findAll(search,sortBy,order,page)
-   if (products.length <1){
-    throw new Error('no data')
-   }
+// exports.getAllproducts = async (req,res)=>{
+// try{const {search,sortBy,order,page=1} = req.query
+// const count = parseInt(await productModel.countAll(search))
+//    const products = await productModel.findAll(search,sortBy,order,page)
+//    if (products.length <1){
+//     throw new Error('no data')
+//    }
 
-   const totalPage = Math.ceil(count/4)
-   const nextPage = parseInt(page) + 1
-   const prevPage = parseInt(page) - 1
+//    const totalPage = Math.ceil(count/4)
+//    const nextPage = parseInt(page) + 1
+//    const prevPage = parseInt(page) - 1
    
-   return res.json({
-    success :true,
-    message : 'list All product',
-    pageinfo:{
-        currenPage: parseInt(page),
-        totalPage,
-        nextPage: nextPage <= totalPage ? nextPage:null,
-        prevPage: prevPage >= 1 ? prevPage:null,
-        totalData: count
-    },
-    results : products
-    })
-}catch(err){
-    if (err.message === 'no data'){
-        return res.status(404).json({
-            success: false,
-            message: 'tidak ada data'
+//    return res.json({
+//     success :true,
+//     message : 'list All product',
+//     pageinfo:{
+//         currenPage: parseInt(page),
+//         totalPage,
+//         nextPage: nextPage <= totalPage ? nextPage:null,
+//         prevPage: prevPage >= 1 ? prevPage:null,
+//         totalData: count
+//     },
+//     results : products
+//     })
+// }catch(err){
+//     if (err.message === 'no data'){
+//         return res.status(404).json({
+//             success: false,
+//             message: 'tidak ada data'
+//         })
+//     }console.log(err)
+//     return res.json({
+//         success: false,
+//         message: 'internal server error'
+//     })
+// }
+//     }
+
+exports.getAllproducts = async (req, res) => {   
+    try {
+        const {searchKey, sortBy, order, page=1, limit} = req.query
+        const limitData = parseInt(limit) || 5
+
+        const count = await productModel.countAll(searchKey)
+        const listProducts = await productModel.findAll(searchKey, sortBy, order, page, limitData)
+
+        const totalPage = Math.ceil(count / limitData)
+        const nextPage = parseInt(page) + 1
+        const prevPage = parseInt(page) - 1
+
+        return res.json({
+            success: true,
+            message: 'List all products',
+            pageInfo: {
+                currentPage: parseInt(page),
+                nextPage: nextPage <= totalPage ? nextPage : null,
+                totalPage,
+                prevPage: prevPage > 1 ? prevPage : null,
+                totalData: parseInt(count)
+            },
+            results: listProducts
         })
-    }console.log(err)
-    return res.json({
-        success: false,
-        message: 'internal server error'
-    })
-}
+    } catch (err) {
+        errorHandler(err, res)
     }
+}
 
 exports.getDetailproduct = async (req,res)=>{
 // mendefininikan fungsi getdataproduct, parameter fungsi arrow untuk mewakili req dan res
@@ -179,7 +209,11 @@ exports.updateproduct = async (req, res) => {
                 if(req.file){
                     if(data.image){
                         const uploadLocation = path.join(global.path,'uploads','products',data.image)
-                        fs.rm(uploadLocation)
+                        // fs.access(uploadLocation, fs.constants.R_OK)
+                        // .then(()=>{
+                        //     fs.rm(uploadLocation)
+                        // })  
+                            fs.rm(uploadLocation)    
                     }
                     req.body.image = req.file.filename
                 }

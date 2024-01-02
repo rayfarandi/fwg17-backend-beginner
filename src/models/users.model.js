@@ -1,12 +1,65 @@
 const db = require('../lib/db.lib')
 const argon = ('argon2')
 
-exports.findAll = async ()=>{
-    const sql = `SELECT * FROM "users"`
-    const values = []
+// exports.findAll = async ()=>{
+//     const sql = `SELECT * FROM "users"`
+//     const values = []
+//     const {rows} = await db.query(sql, values)
+//     return rows
+// } 
+exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) => {
+    const orderType = ["ASC", "DESC"]
+    order = orderType.includes(order)? order : "ASC"
+    
+    const limitData = limit
+    const offset = (page - 1) * limitData
+
+    if(typeof sortBy === "object"){
+        const sortByColumn = ['id', 'fullName', 'email', 'createdAt']
+        let columnSort = []
+
+        sortBy.forEach(item => {
+           if(sortByColumn.includes(item)){
+            columnSort.push(`"${item}" ${order}`)
+           }
+        })
+    
+        const sql = `
+        SELECT *
+        FROM "users" WHERE "fullName" ILIKE $1
+        ORDER BY ${columnSort.join(', ')}
+        LIMIT ${limitData} OFFSET ${offset}
+        `
+        console.log(sql)
+        const values = [`%${searchKey}%`]
+        const {rows} = await db.query(sql, values)
+        if(!rows.length){
+            throw new Error(`no data found`)
+        }
+        return rows
+    }
+
+    const sql = `
+    SELECT *
+    FROM "users" WHERE "fullName" ilike $1
+    ORDER BY "${sortBy}" ${order}
+    LIMIT ${limitData} OFFSET ${offset}
+    `
+    console.log(sql)
+    const values = [`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
+    if(!rows.length){
+        throw new Error(`no data found`)
+    }
     return rows
-} 
+}
+
+exports.countAll = async (searchKey='') => {
+    const sql = `SELECT COUNT("id") AS "counts" FROM "users" WHERE "fullName" ILIKE $1`
+    const values = [`%${searchKey}%`]
+    const {rows} = await db.query(sql, values)
+    return rows[0].counts
+}
 
 exports.findOne = async (id)=>{
     const sql = `SELECT * FROM "users" WHERE id = $1`
@@ -40,7 +93,7 @@ exports.update = async (id,data) => {
     values.push(await(data[item]))
     column.push(`"${item}"=$${values.length}`)
   }
-    const sql = `UPDATE "users" SET ${column.join(', ')}, "update_at" = now() WHERE id=$1 RETURNING *`
+    const sql = `UPDATE "users" SET ${column.join(', ')}, "updateAt" = now() WHERE id=$1 RETURNING *`
     const {rows} = await db.query(sql, values)
     return rows[0]
 }

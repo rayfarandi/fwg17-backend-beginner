@@ -1,14 +1,43 @@
 const userModel = require('../../models/users.model')
 const argon = require('argon2')
+const { errorHandler } = require('../../moduls/handling')
  
-exports.getAllUsers = async (req, res) => {
-    const users = await userModel.findAll();
-    return res.json({
-        success: true,
-        message: 'List all users',
-        results: users
-    });
-};
+// exports.getAllUsers = async (req, res) => {
+//     const users = await userModel.findAll();
+//     return res.json({
+//         success: true,
+//         message: 'List all users',
+//         results: users
+//     });
+// };
+exports.getAllUsers = async (req, res) => { 
+    try {
+        const {searchKey, sortBy, order, page=1, limit} = req.query
+        const limitData = parseInt(limit) || 5
+
+        const count = await userModel.countAll(searchKey)      
+        const listUsers = await userModel.findAll(searchKey, sortBy, order, page, limitData)
+        
+        const totalPage = Math.ceil(count / limitData)
+        const nextPage = parseInt(page) + 1
+        const prevPage = parseInt(page) - 1
+
+        return res.json({                                                              
+            success: true,
+            message: `List all users`,
+            pageInfo: {
+                currentPage: parseInt(page),
+                totalPage,
+                nextPage: nextPage <= totalPage ? nextPage : null,
+                prevPage: prevPage > 1 ? prevPage : null,
+                totalData: parseInt(count)
+            },
+            results: listUsers                                                    
+        })
+    } catch (error) {
+        errorHandler(error, res)
+    }
+}
 
 
 
@@ -38,7 +67,7 @@ exports.getDetailUser = async (req,res)=>{
 
 
 // sebelum memakai switch  exports.createUser
-//exports.createUser = async (req, res) => {
+// exports.createUser = async (req, res) => {
 //     try {
 //         if (req.body.password){
 //             req.body.password = await argon.hash(req.body.pa)
