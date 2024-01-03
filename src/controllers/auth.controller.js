@@ -25,7 +25,7 @@ exports.login = async (req,res)=>{
 
         return res.json({
             succces: true,
-            message: 'login succes',
+            message: 'Login succes, redirec to Home',
             results:{
                 token
             }

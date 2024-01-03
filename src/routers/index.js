@@ -12,5 +12,6 @@ router.use('/',require('./public'))
 router.use('/auth',require('./auth.router'))
 router.use('/customer',autMiddleware,roleCheckMiddleware('customer'),require('./customer'))
 
+router.use('/profile',autMiddleware,require('./profile.router'))
 
 module.exports = router

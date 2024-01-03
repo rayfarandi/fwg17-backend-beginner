@@ -90,8 +90,10 @@ exports.update = async (id,data) => {
   values.push(parseInt(id))
   for (let item in data){
     // values.push(await argon.hash(data[item]))
-    values.push(await(data[item]))
-    column.push(`"${item}"=$${values.length}`)
+    if(data[item]){
+        values.push(await(data[item]))
+        column.push(`"${item}"=$${values.length}`)
+    }
   }
     const sql = `UPDATE "users" SET ${column.join(', ')}, "updateAt" = now() WHERE id=$1 RETURNING *`
     const {rows} = await db.query(sql, values)
