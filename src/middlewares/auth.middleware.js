@@ -14,7 +14,7 @@ try {
     next()
 
 } catch (err) {
-    if(err.message === 'invalid'){
+    if(err.message === 'invalid' || err.message.includes('malformed')){
         return res.status(401).json({
             success: false,
             message: 'invalid token'

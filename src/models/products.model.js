@@ -32,6 +32,43 @@ const db = require('../lib/db.lib')
 //     return rows
 // }
 
+exports.findCombine = async (id) => {
+    const sql = `
+    SELECT
+    "p"."id",
+    "p"."name",
+    "p"."description",
+    "p"."basePrice",
+    "p"."image",
+    (
+        SELECT jsonb_build_object(
+            'id', "ps"."id",
+            'size', "ps"."size",
+            'additionalPrice', "ps"."additionalPrice"
+        )
+    ) as "sizes",
+    (
+        SELECT jsonb_build_object(
+            'id', "pv"."id",
+            'name', "pv"."name",
+            'additionalPrice', "pv"."additionalPrice"
+        )
+    ) as "variants",
+    "p"."discount",
+    "p"."isRecommended",
+    "p"."createdAt",
+    "p"."updateAt"
+    FROM "products" "p"
+    LEFT JOIN "productVariant" "pv" ON "pv"."productid" = "p"."id"
+    LEFT JOIN "productSize" "ps" ON "ps"."productid" = "p"."id"
+    WHERE "p"."id" = $1
+    GROUP BY "p"."id", "ps"."productid", "ps"."id", "pv"."productid", "pv"."id"
+    `
+    const values = [id]
+    const {rows} = await db.query(sql, values)
+    return rows
+}
+
 
 exports.findOne = async (id)=>{
     const sql = `SELECT * FROM "products" WHERE id = $1`
@@ -52,10 +89,17 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
         const sql = `
         SELECT 
         "p"."id", "p"."name", "p"."description", "p"."basePrice", "p"."image",
-        "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
+        "p"."discount", "p"."isRecommended", "p"."createdAt",
+
+        
+
+        "categories"."name" AS "category"
         FROM "products" "p"
-        JOIN "productCategories" "pc" on ("pc"."productId" = "p"."id")
+        JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
         JOIN "categories" on ("categories"."id" = "pc"."categoryId")
+
+        
+
         WHERE "p"."name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
         ORDER BY "${sortBy}"."name" ${order}
         LIMIT ${limitData} OFFSET ${offset}
@@ -89,7 +133,7 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
              "p"."id", "p"."name", "p"."description", "p"."basePrice", "p"."image",
              "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
              FROM "products" "p"
-             JOIN "productCategories" "pc" on ("pc"."productId" = "p"."id")
+             JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
              JOIN "categories" on ("categories"."id" = "pc"."categoryId")
              WHERE "p"."name" ILIKE $1
              ORDER BY ${columnSort.join(', ')}
@@ -124,12 +168,23 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
         return rows
     }
 
-    const sql = `
+    const sql = 
+    `
     SELECT *
     FROM "products" WHERE "name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
     ORDER BY "${sortBy}" ${order}
     LIMIT ${limitData} OFFSET ${offset}
     `
+    // `SELECT "p".*,
+    // "t"."name" as "tag"
+    // FROM "products" "p" 
+    
+    // LEFT join "tags" "t" on ("t"."id" = "p"."tagid")
+    // WHERE "p"."name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true' : ''}
+    // GROUP BY "p"."id", "t"."name"
+    // ORDER BY "p"."${sortBy}" ${order}
+    // LIMIT ${limitData} OFFSET ${offset}
+    // `
     const values =[`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
     if(!rows.length){

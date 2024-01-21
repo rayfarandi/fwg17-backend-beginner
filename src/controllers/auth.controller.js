@@ -30,15 +30,17 @@ exports.login = async (req,res)=>{
                 token
             }
         })
-    
-    }catch(err){
-        if (err.message === 'wrong' ){
+        // }catch(error){
+        //     errorHandler(error,res)
+        // }
+    }catch(error){
+        if (error.message === 'wrong' ){
             return res.status(401).json({
                 succces: false,
                 message: 'wrong email or password'
             })
         }
-        console.log(err)
+        console.log(error)
         return res.status.json({
             succces: false,
             message: 'internal server error'
@@ -78,23 +80,25 @@ exports.login = async (req,res)=>{
 
 exports.register = async (req,res)=>{
     try{
-        const {fullName,email,password,role='customer'} = req.body
+        const {fullName,email,password, address, phoneNumber,role='customer'} = req.body
         const hashed = await argon.hash(password)
-        const user = userModel.insert({
+        const data = await userModel.insert({
             fullName,
             email,
             password : hashed,
+            address,
+            phoneNumber,
             role,
         })
-        const users = {fullName,email}
+        // const users = {fullName,email}
         return res.json({
             succces: true,
             message: 'registrasi succesfully',
-            results: users
+            results: data
         })
     }
-    catch(err){
-        errorHandler(err,res)
+    catch(error){
+        errorHandler(error,res)
     }
     // catch(err){
     //     console.log(err)

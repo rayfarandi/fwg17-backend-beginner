@@ -1,17 +1,3 @@
-let productVariants =[
-        {
-            id: 1,
-            name: 'Leanne Graham'
-        },
-        {
-            id: 2,
-            name:'Clamentine Duduque'
-
-        }
-    ] //// array untuk menyimpan data pengguna
-let countproductVariant = productVariants.length
-// membuat variabel menghitung jumlah pengguna
-
 const productVariantModel = require('../../models/productVariants.model')
  
 exports.getAllproductVariants = async (req,res)=>{

@@ -104,28 +104,31 @@ exports.createUser = async (req, res) => {
             message: 'create user success',
             results: user
         })
-    } catch (err) {
-        console.log(JSON.stringify(err));
-
-        switch (err.code) {
-            case "23502":
-                return res.status(400).json({
-                    success: false,
-                    message: `${err.column} cannot be empty`
-                })
-                case "23505":
-                    const errorMessage = err.column = 'email already exists'
-                    return res.status(400).json({
-                        success: false,
-                        message: errorMessage
-                    })
-            default:
-                return res.status(500).json({
-                    success: false,
-                    message: 'Internal server error'
-                })
-        }
+    } catch (error) {
+        errorHandler(error, res)
     }
+    // } catch (err) {
+    //     console.log(JSON.stringify(err));
+
+    //     switch (err.code) {
+    //         case "23502":
+    //             return res.status(400).json({
+    //                 success: false,
+    //                 message: `${err.column} cannot be empty`
+    //             })
+    //             case "23505":
+    //                 const errorMessage = err.column = 'email already exists'
+    //                 return res.status(400).json({
+    //                     success: false,
+    //                     message: errorMessage
+    //                 })
+    //         default:
+    //             return res.status(500).json({
+    //                 success: false,
+    //                 message: 'Internal server error'
+    //             })
+    //     }
+    // }
 }
 
 

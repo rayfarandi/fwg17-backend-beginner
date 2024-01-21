@@ -1,16 +1,3 @@
-let tags =[
-    {
-        id: 1,
-        name: 'Leanne Graham'
-    },
-    {
-        id: 2,
-        name:'Clamentine Duduque'
-
-    }
-] //// array untuk menyimpan data pengguna
-let counttag = tags.length
-// membuat variabel menghitung jumlah pengguna
 
 const tagModel = require('../../models/tags.model')
 

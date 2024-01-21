@@ -33,16 +33,40 @@ exports.getAllproducts = async (req, res) => {
 }
 
 exports.getDetailproduct = async (req, res) => {                                         
-    try {
-        const product = await productModel.findOne(req.params.id)
-        return res.json({                                                              
+    const {id} = req.params
+    try{
+        const products = await productModel.findCombine(id)
+        const results = products.reduce((prev,curr, idx, arr)=>{
+            for(keys in curr){
+                if(!prev[keys]){
+                    prev[keys] = curr[keys]
+                }
+                if(keys === 'sizes' || keys === 'variants'){
+                    if(prev[keys].length === undefined){
+                        prev[keys] = []
+                    }
+                    if(prev[keys].findIndex(item => item.id === curr[keys].id) === -1){
+                        prev[keys].push(curr[keys])
+                    }
+                }
+            }
+            return prev
+        }, {})
+        return res.json({
             success: true,
-            message: 'detail product',
-            results: product                                                  
+            message: 'Detail product',
+            results
         })
 
-    } catch (error) {
-        errorHandler(error, res)
+    // } catch (error) {
+    //     errorHandler(error, res)
+    // }
+    }catch(err){
+        console.error(err)
+        return res.status(500).json({
+            success: false,
+            message: 'Internal server error'
+        })
     }
 }
 

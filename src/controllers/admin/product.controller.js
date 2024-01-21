@@ -209,11 +209,11 @@ exports.updateproduct = async (req, res) => {
                 if(req.file){
                     if(data.image){
                         const uploadLocation = path.join(global.path,'uploads','products',data.image)
-                        // fs.access(uploadLocation, fs.constants.R_OK)
-                        // .then(()=>{
-                        //     fs.rm(uploadLocation)
-                        // })  
-                            fs.rm(uploadLocation)    
+                        fs.access(uploadLocation, fs.constants.R_OK)
+                        .then(()=>{
+                            fs.rm(uploadLocation)
+                        })  
+                            // fs.rm(uploadLocation)    
                     }
                     req.body.image = req.file.filename
                 }

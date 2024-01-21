@@ -89,7 +89,7 @@ exports.update = async (id,data) => {
   const values = []
   values.push(parseInt(id))
   for (let item in data){
-    // values.push(await argon.hash(data[item]))
+
     if(data[item]){
         values.push(await(data[item]))
         column.push(`"${item}"=$${values.length}`)
@@ -107,3 +107,26 @@ const sql = `DELETE FROM "users" WHERE id=$1 RETURNING *`
     const {rows} = await db.query(sql,values)
     return rows[0]
 }
+
+// exports.delete = async (id) => {
+//     try {
+//         if (isNaN(id)) {
+//             throw new Error(`invalid input`);
+//         }
+
+//         const query = `SELECT "id" FROM "users"`;
+//         const { rows } = await db.query(query);
+//         const results = rows.map(item => item.id);
+
+//         if (results.indexOf(id) === -1) {
+//             throw new Error(`data with id ${id} not found`);
+//         }
+
+//         const sql = `DELETE FROM "users" WHERE "id" = $1 RETURNING *`;
+//         const values = [id];
+//         const { rows: deletedRows } = await db.query(sql, values);
+//         return deletedRows[0];
+//     } catch (error) {
+//         throw new Error(error.message);
+//     }
+// }
