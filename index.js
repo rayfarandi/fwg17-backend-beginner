@@ -39,3 +39,5 @@ app.listen(process.env.PORT, ()=>{
     console.log(`App listening on port ${process.env.PORT}`)
     // menampilkan jika object express untuk memulai/menjalankan server port 8888 berhasil di run 
 })
+
+module.exports = app
