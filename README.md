@@ -33,7 +33,7 @@ To run the project locally, follow these simple steps:
 
 1. Clone this repository
 ```sh
-  git clone https://github.com/putragabrielll/fwg17-backend-beginner
+  git clone https://github.com/rayfarandi/fwg17-backend-beginner
   cd fwg17-backend-beginner
 ```
 
