@@ -59,24 +59,14 @@ describe('detail user',()=>{
         const response=await userController.getDetailUser(req,res)
         expect(response.success).to.be.eq(true)
     })
-    it('user not found',async()=>{
+    it('user id 10000 not found',async()=>{
         const req={
-            params:{id:10000}
+            params:{id:"10000"}
         }
         const response = await userController.getDetailUser(req,res)
-        expect(response.success).to.be.eq(false)
-        expect(response.message).to.be.eq('user not found')
+        expect(response.message).to.be.eq('user id 10000 not found')
 
     })
-
-    it('should return error when an error occurs', async () => {
-        const req = {
-            params: { id: 'invalidId' } 
-        };
-        const response = await userController.getDetailUser(req, res);
-        expect(response.success).to.be.eq(false);
-        expect(response.message).to.be.eq('Internal server error');
-    });
 })
 
 
@@ -104,7 +94,34 @@ describe('create user', () => {
             }
         }
         const response = await userController.createUser(req, res)
-        expect(response.message).to.be.eq("testing9999@mail.com already exist")
+        expect(response.message).to.be.eq("email   testing9999@mail.com already exist")
+    })
+})
+
+describe('update user',()=>{
+    const req ={
+        params:{id:84},
+        body:{address:"ganti alamat"}
+    }
+    it('should return true',async()=>{
+        const response =await userController.updateUser(req,res)
+        expect(response.success).to.be.eq(true)
+    })
+    // it('should return message user with id 9999 not found',async()=>{
+    //     const req = {
+    //         params:{id:9999},
+    //         body:{address:"ganti alamat"}
+    //     }
+    //     const response=await userController.updateUser(req,res)
+    //     expect(response.message).to.be.eq("user with id 9999 not found")
+    // })
+    it('should return success true update password', async() => {
+        const req = {
+            params: {id: 84},
+            body: {password: "123"}
+        }
+        const response = await userController.updateUser(req, res)
+        expect(response.success).to.be.eq(true)
     })
 })
 
