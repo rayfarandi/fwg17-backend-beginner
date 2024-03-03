@@ -31,7 +31,7 @@ describe("register", () => {
                 password: "123",}
         }
         const response = await authController.register(req, res)
-        expect(response.message).to.be.eq("email   mikaina@mail.com already exist")
+        expect(response.message).to.be.eq("email mikaina@mail.com already registered")
     })
 })
 

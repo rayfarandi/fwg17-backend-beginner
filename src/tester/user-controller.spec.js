@@ -94,7 +94,7 @@ describe('create user', () => {
             }
         }
         const response = await userController.createUser(req, res)
-        expect(response.message).to.be.eq("email   testing9999@mail.com already exist")
+        expect(response.message).to.be.eq("email testing9999@mail.com already registered")
     })
 })
 
@@ -107,14 +107,13 @@ describe('update user',()=>{
         const response =await userController.updateUser(req,res)
         expect(response.success).to.be.eq(true)
     })
-    // it('should return message user with id 9999 not found',async()=>{
-    //     const req = {
-    //         params:{id:9999},
-    //         body:{address:"ganti alamat"}
-    //     }
-    //     const response=await userController.updateUser(req,res)
-    //     expect(response.message).to.be.eq("user with id 9999 not found")
-    // })
+    it('should return user id 9999 not found',async()=>{
+        const req = {
+            params:{id:9999}
+        }
+        const response=await userController.updateUser(req,res)
+        expect(response.message).to.be.eq("user id 9999 not found")
+    })
     it('should return success true update password', async() => {
         const req = {
             params: {id: 84},
