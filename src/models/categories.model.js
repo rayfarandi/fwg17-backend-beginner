@@ -1,44 +1,118 @@
 const db = require('../lib/db.lib')
+const { isStringCheck, isCheck,updateColumn } = require('../moduls/check')
 
-exports.findAll = async ()=>{
-    const sql = `SELECT * FROM "categories"`
-    const values = []
+exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) => {
+    const orderType = ["ASC", "DESC"]
+    order = orderType.includes(order)? order : "ASC"
+    
+    const limitData = limit
+    const offset = (page - 1) * limitData
+
+    if(typeof sortBy === "object"){
+        const sortByColumn = ['id', 'name', 'createdAt']
+        let columnSort = []
+
+        sortBy.forEach(item => {
+           if(sortByColumn.includes(item)){
+            columnSort.push(`"${item}" ${order}`)
+           }
+        })
+
+        const sql = `
+        SELECT *
+        FROM "categories" WHERE "name" ILIKE $1
+        ORDER BY ${columnSort.join(', ')}
+        LIMIT ${limitData} OFFSET ${offset}
+        `
+        const values = [`%${searchKey}%`]
+        const {rows} = await db.query(sql, values)
+        if(!rows.length){
+            throw new Error(`no data found `)
+        }
+        return rows
+    }
+
+    const sql = `
+    SELECT *
+    FROM "categories" WHERE "name" ILIKE $1
+    ORDER BY "${sortBy}" ${order}
+    LIMIT ${limitData} OFFSET ${offset}
+    `
+    console.log(sql)
+    const values = [`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
+    if(!rows.length){
+        throw new Error(`no data found `)
+    }
     return rows
-} 
+}
 
-exports.findOne = async (id)=>{
-    const sql = `SELECT * FROM "categories" WHERE id = $1`
+
+exports.countAll = async (searchKey='') => {
+    const sql = `SELECT COUNT("id") AS "counts" FROM "categories" WHERE "name" ILIKE $1`
+    const values = [`%${searchKey}%`]
+    const {rows} = await db.query(sql, values)
+    return rows[0].counts
+}
+
+
+exports.findOne = async (id) => {
+    const sql = `
+    SELECT *
+    FROM "categories" WHERE "id" = $1
+    `
+    const  values = [id]
+    const {rows} = await db.query(sql, values)
+    if(!rows.length){
+        throw new Error(`category with id ${id} not found `)
+    }
+    return rows[0]
+}
+
+
+exports.insert = async (body) => {
+    const queryString = await isStringCheck("categories", "name", body.name)
+    if(queryString){
+        throw new Error(queryString)
+    }
+
+    const sql = `INSERT INTO "categories"("name") VALUES ($1) RETURNING *`
+    const values = [body.name]
+    const {rows} = await db.query(sql, values)
+    return rows[0]
+}
+
+
+exports.update = async (id, body) => {
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
+    }
+
+    const queryId = await isCheck("categories", id)
+    if(queryId){
+        throw new Error(queryId)
+    }
+
+    const queryString =  await isStringCheck("categories", "name", body.name)
+    if(queryString){
+        throw new Error (queryString)
+    }
+
+    return await updateColumn(id, body, "categories")
+}
+
+
+exports.delete = async (id) => {
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
+    }
+    
+    const queryId = await isCheck("categories", id)
+    if(queryId){
+        throw new Error(queryId)
+    }
+    const sql = `DELETE FROM "categories" WHERE "id" = $1 RETURNING *`
     const values = [id]
     const {rows} = await db.query(sql, values)
     return rows[0]
-} 
-
-exports.insert = async (data)=>{
-    const sql = `INSERT INTO "categories" 
-    ("name")
-    VALUES
-    ($1)
-    RETURNING * `
-    const values = [data.name]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
-} 
-
-// exports.updatecategorie = async (data) => { // masih binggung
-//     const sql = `UPDATE "categories" SET
-//     "name" = $1,
-//     "email" = $2,
-//     "password" = $3,
-//     "address" = $4,
-//     "picture" = $5,
-//     "phoneNumber" = $6,
-//     "role" = $7
-//     WHERE "id" = $8
-//     RETURNING *`
-
-//     const values = [data.fullName, data.email, data.password, data.address, data.picture, data.phoneNumber, data.role, data.id];
-
-//     const {rows} = await db.query(sql, values)
-//     return rows[0];
-// }
+}

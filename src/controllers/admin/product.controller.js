@@ -1,14 +1,14 @@
 const productModel = require('../../models/products.model')
 const uploadMiddlware = require('../../middlewares/upload.middlewares')
 const upload = uploadMiddlware('products').single('image')
-const errorHandler = require('../../moduls/handling')
+const {errorHelper} = require('../../moduls/check')
 const fs = require('fs/promises')
 const path =require('path')
 
 // exports.getAllproducts = async (req,res)=>{
-// try{const {search,sortBy,order,page=1} = req.query
-// const count = parseInt(await productModel.countAll(search))
-//    const products = await productModel.findAll(search,sortBy,order,page)
+// try{const {searchKey,sortBy,order,page=1} = req.query
+// const count = parseInt(await productModel.countAll(searchKey))
+//    const products = await productModel.findAll(searchKey,sortBy,order,page)
 //    if (products.length <1){
 //     throw new Error('no data')
 //    }
@@ -43,13 +43,15 @@ const path =require('path')
 // }
 //     }
 
-exports.getAllproducts = async (req, res) => {   
+
+
+exports.getAllProducts = async (req, res) => {   
     try {
-        const {searchKey, sortBy, order, page=1, limit} = req.query
+        const {searchKey, sortBy, order, page=1, limit,best_seller} = req.query
         const limitData = parseInt(limit) || 5
 
         const count = await productModel.countAll(searchKey)
-        const listProducts = await productModel.findAll(searchKey, sortBy, order, page, limitData)
+        const listProducts = await productModel.findAll(searchKey, sortBy, order, page, limitData,best_seller)
 
         const totalPage = Math.ceil(count / limitData)
         const nextPage = parseInt(page) + 1
@@ -67,11 +69,24 @@ exports.getAllproducts = async (req, res) => {
             },
             results: listProducts
         })
-    } catch (err) {
-        errorHandler(err, res)
+    } 
+    catch (error) {
+        return errorHelper(error, res)
     }
-}
 
+    // catch(error){
+    //         if (error.message === 'no data found'){
+    //             return res.status(404).json({
+    //                 success: false,
+    //                 message: 'tidak ada data'
+    //             })
+    //         }console.log(error)
+    //         return res.json({
+    //             success: false,
+    //             message: 'internal server error'
+    //         })
+    //     }
+}
 exports.getDetailproduct = async (req,res)=>{
 // mendefininikan fungsi getdataproduct, parameter fungsi arrow untuk mewakili req dan res
      const id = parseInt(req.params.id)
@@ -127,7 +142,6 @@ exports.getDetailproduct = async (req,res)=>{
 // }
 exports.createproduct= async (req,res)=>{
     upload(req,res, async(err)=>{
-        
         try{
             if(err){
                 throw err
@@ -263,15 +277,38 @@ exports.updateproduct = async (req, res) => {
         
 // }
 
+// exports.deleteproduct = async (req,res)=>{
+//     try {
+//         const deleted = await productModel.delete(req.params.id)  
+//         // if(deleted.image && global.path){
+//         if(deleted.image){
+//             const uploadLocation = path.join(global.path, 'uploads','products', deleted.image)
+//             await fs.rm(uploadLocation)
+//         }  
+//         return res.json({
+//             success :true,
+//             message : 'delete succes',
+//             results : deleted
+//         })
+        
+//     } catch (error) {
+//         console.error(error);
+//         return res.status(500).json({
+//             success: false,
+//             message: 'Internal server error'
+//         })
+//     }
+        
+// }
 exports.deleteproduct = async (req,res)=>{
-        const deleted = await productModel.delete(req.params.id)  
-        if(deleted.image){
-            const uploadLocation = path.join(global.path, 'uploads','products', deleted.image)
-            await fs.rm(uploadLocation)
-        }  
-        return res.json({
-            success :true,
-            message : 'delete succes',
-            results : deleted
-        })
+    const deleted = await productModel.delete(req.params.id)  
+    if(deleted.image){
+        const uploadLocation = path.join(global.path, 'uploads','products', deleted.image)
+        await fs.rm(uploadLocation)
+    }  
+    return res.json({
+        success :true,
+        message : 'delete succes',
+        results : deleted
+    })
 }

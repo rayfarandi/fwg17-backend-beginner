@@ -6,13 +6,13 @@
   "scripts": {
     "dev": "nodemon index.js",
     "test": "mocha ./src/tester/*.spec.js -r dotenv/config --exit",
-    "test:cov": "nyc mocha ./src/test/*.spec.js -r dotenv/config --exit"
+    "test:cov": "nyc mocha ./src/tester/*.spec.js -r dotenv/config --exit"
   },
   "keywords": [],
   "author": "",
   "license": "ISC",
   "devDependencies": {
-    "chai": "^5.1.0",
+    "chai": "^4.4.1",
     "mocha": "^10.3.0",
     "nodemon": "^3.0.1",
     "nyc": "^15.1.0"
@@ -26,6 +26,7 @@
     "jsonwebtoken": "^9.0.2",
     "morgan": "^1.10.0",
     "multer": "^1.4.5-lts.1",
-    "pg": "^8.11.3"
+    "pg": "^8.11.3",
+    "sinon": "^17.0.1"
   }
 }

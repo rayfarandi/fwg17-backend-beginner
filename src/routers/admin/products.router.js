@@ -7,7 +7,7 @@ const uploadMiddlware = require('../../middlewares/upload.middlewares')
 // const insertMiddlware = require('../../middlewares/insert.middlewares')
 // tidak memerlukan middlware baru
 
-productRouter.get('/',productController.getAllproducts)
+productRouter.get('/',productController.getAllProducts)
 //ketika mendapatkan '/' product dari http dengan mengunakan metod get, dan akan menjalankan fungsi getAllproducts dari controller product.controller untuk melihat semua data products
 productRouter.get('/:id',productController.getDetailproduct)
 //ketika mendapatkan '/:id' product dari http dengan mengunakan metod get, dan akan menjalankan fungsi getDetailproduct dari controller product.controller untuk melihat data product by id

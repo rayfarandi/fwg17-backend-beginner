@@ -1,51 +1,51 @@
 const userModel = require('../models/users.model')
 const argon = require('argon2')
 const jwt = require('jsonwebtoken')
-const { errorHandler } = require('../moduls/handling')
+const { errorHelper } = require('../moduls/check')
 
-exports.login = async (req,res)=>{
-    try{
-    const {email,password} = req.body
-    const user = await userModel.findOneByEmail(email)
+// exports.login = async (req,res)=>{
+//     try{
+//     const {email,password} = req.body
+//     const user = await userModel.findOneByEmail(email)
 
-    if(!user){
-        throw Error('wrong')
-    }
-    const verify = await argon.verify(user.password, password)
+//     if(!user){
+//         throw Error('wrong')
+//     }
+//     const verify = await argon.verify(user.password, password)
     
-        if (!verify){
+//         if (!verify){
             
-            throw Error('wrong')
-        }
-        const payload = {
-            id: user.id,
-            role: user.role
-        }
-        const token = jwt.sign(payload,process.env.APP_SECRET || 'secreatkey')
+//             throw Error('wrong')
+//         }
+//         const payload = {
+//             id: user.id,
+//             role: user.role
+//         }
+//         const token = jwt.sign(payload,process.env.APP_SECRET || 'secreatkey')
 
-        return res.json({
-            succces: true,
-            message: 'Login succes, redirec to Home',
-            results:{
-                token
-            }
-        })
+//         return res.json({
+//             succces: true,
+//             message: 'Login succes, redirec to Home',
+//             results:{
+//                 token
+//             }
+//         })
         // }catch(error){
-        //     errorHandler(error,res)
+        //     errorHelper(error,res)
         // }
-    }catch(error){
-        if (error.message === 'wrong' ){
-            return res.status(401).json({
-                succces: false,
-                message: 'wrong email or password'
-            })
-        }
-        console.log(error)
-        return res.status.json({
-            succces: false,
-            message: 'internal server error'
-        })
-    }
+    // }catch(error){
+    //     if (error.message === 'wrong' ){
+    //         return res.status(401).json({
+    //             succces: false,
+    //             message: 'wrong email or password'
+    //         })
+    //     }
+    //     console.log(error)
+    //     return res.status.json({
+    //         succces: false,
+    //         message: 'internal server error'
+    //     })
+    // }
 // console.log(req.body)
     // //cetak req dari body yg dikirimkan penguna
     // const {username,password} =req.body
@@ -67,16 +67,42 @@ exports.login = async (req,res)=>{
     //         //cetak ke pengguna
     //     })
     // }
+// }
+
+exports.login = async (req, res) => { 
+    try {
+        const {email, password} = req.body
+        if(!email){
+            throw new Error(`enter your email`)
+        }
+        const user = await userModel.findOneByEmail(email)
+        if(!user){
+            throw new Error(`email not registered, create new account`)
+        }
+        if(!password){
+            throw new Error(`enter your password`)
+        }
+        const verify = await argon.verify(user.password, password)
+        if(!verify){
+            throw new Error(`wrong password, try again`)
+        }
+        const payload = {
+            id: user.id,
+            role: user.role
+        }
+
+        const token = jwt.sign(payload, process.env.APP_SECRET || 'secretKey')
+        return res.json({ 
+            success: true,
+            message: `Login succes, redirec to Home`,
+            results: {
+                token: token} 
+            })
+    } catch (error) {
+        return errorHelper(error, res)
+    }                                 
 }
 
-// exports.logout = async (req,res)=>{
-//     const cookies = req.headers.authorization
-//     cookies.destroy()
-//     res.json({
-//         success: true,
-//         message: 'Logout successful',
-//     })
-// }
 
 exports.register = async (req,res)=>{
     try{
@@ -92,13 +118,13 @@ exports.register = async (req,res)=>{
         })
         // const users = {fullName,email}
         return res.json({
-            succces: true,
+            success: true,
             message: 'registrasi succesfully',
             results: data
         })
     }
     catch(error){
-        errorHandler(error,res)
+       return errorHelper(error,res)
     }
     // catch(err){
     //     console.log(err)

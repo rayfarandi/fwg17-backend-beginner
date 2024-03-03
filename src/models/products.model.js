@@ -1,4 +1,5 @@
 const db = require('../lib/db.lib')
+const { isCheck, isStringCheck, updateColumn } = require('../moduls/check')
 
 
 
@@ -77,32 +78,128 @@ exports.findOne = async (id)=>{
     return rows[0]
 } 
 
-exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, best_seller) => {
+// exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit,best_seller) => {
+//     const orderType = ["ASC", "DESC"]
+//     order = orderType.includes(order)? order : "ASC"
+
+//     const limitData = limit
+//     const offset = (page - 1) * limitData
+
+//     if(sortBy === "categories"){
+//         const sql = `
+//         SELECT 
+//         "p"."id", "p"."name", "p"."description", "p"."basePrice", "p"."image",
+//         "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
+//         FROM "products" "p"
+//         JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
+//         JOIN "categories" on ("categories"."id" = "pc"."categoryid")
+//         WHERE "p"."name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
+//         ORDER BY "${sortBy}"."name" ${order}
+//         LIMIT ${limitData} OFFSET ${offset}
+//         `
+//         console.log(sql)
+//         const values =[`%${searchKey}%`]
+//         const {rows} = await db.query(sql, values)
+//         if(!rows.length){
+//             throw new Error(`no data found`)
+//         }
+//         return rows
+//     }
+
+//     if(typeof sortBy === "object"){
+//         const sortByColumn = ["id", "name", "basePrice", "createdAt", "categories"]
+//         const columnSort = []
+
+//         if(sortBy.includes("categories")){
+//             sortBy.map(item => {
+//                 if(sortByColumn.includes(item)){
+//                     if(item === "categories"){
+//                         columnSort.push(`"${item}"."name" ${order}`)
+//                         return
+//                     }
+//                  columnSort.push(`"p"."${item}" ${order}`)
+//                 }
+//              })
+             
+//              const sql = `
+//              SELECT 
+//              "p"."id", "p"."name", "p"."description", "p"."basePrice", "p"."image",
+//              "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
+//              FROM "products" "p"
+//              JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
+//              JOIN "categories" on ("categories"."id" = "pc"."categoryid")
+//              WHERE "p"."name" ILIKE $1
+//              ORDER BY ${columnSort.join(', ')}
+//              LIMIT ${limitData} OFFSET ${offset}
+//              `
+//              console.log(sql)
+//              const values =[`%${searchKey}%`]
+//              const {rows} = await db.query(sql, values)
+//              if(!rows.length){
+//                  throw new Error(`no data found`)
+//              }
+//              return rows
+//         }
+        
+//         sortBy.map(item => {
+//            if(sortByColumn.includes(item)){
+//             columnSort.push(`"${item}" ${order}`)
+//            }
+//         })
+        
+//         const sql = `
+//         SELECT * 
+//         FROM "products" WHERE "name" ILIKE $1 
+//         ORDER BY ${columnSort.join(', ')}
+//         LIMIT ${limitData} OFFSET ${offset}
+//         `
+//         const values =[`%${searchKey}%`]
+//         const {rows} = await db.query(sql, values)
+//         if(!rows.length){
+//             throw new Error(`no data found`)
+//         }
+//         return rows
+//     }
+
+//     const sql = `
+//     SELECT *
+//     FROM "products" WHERE "name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
+//     ORDER BY "${sortBy}" ${order}
+//     LIMIT ${limitData} OFFSET ${offset}
+//     `
+//     const values =[`%${searchKey}%`]
+//     const {rows} = await db.query(sql, values)
+//     if(!rows.length){
+//         throw new Error(`no data found`)
+//     }
+//     return rows
+// }
+
+
+// exports.countAll = async (searchKey='') => {
+//         const sql = `SELECT COUNT("id") AS "counts" FROM "products" WHERE "name" ILIKE $1`
+//         const values = [`%${searchKey}%`]
+//         const {rows} = await db.query(sql, values)
+//         return rows[0].counts
+// }
+exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit,best_seller) => {
     const orderType = ["ASC", "DESC"]
     order = orderType.includes(order)? order : "ASC"
 
-
-    const limitData = limit
-    const offset = (page - 1) * limitData
+    
+    const offset = (page - 1) * limit
 
     if(sortBy === "categories"){
         const sql = `
         SELECT 
         "p"."id", "p"."name", "p"."description", "p"."basePrice", "p"."image",
-        "p"."discount", "p"."isRecommended", "p"."createdAt",
-
-        
-
-        "categories"."name" AS "category"
+        "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
         FROM "products" "p"
         JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
-        JOIN "categories" on ("categories"."id" = "pc"."categoryId")
-
-        
-
+        JOIN "categories" on ("categories"."id" = "pc"."categoryid")
         WHERE "p"."name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
         ORDER BY "${sortBy}"."name" ${order}
-        LIMIT ${limitData} OFFSET ${offset}
+        LIMIT ${limit} OFFSET ${offset}
         `
         console.log(sql)
         const values =[`%${searchKey}%`]
@@ -134,10 +231,10 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
              "p"."discount", "p"."isRecommended", "p"."createdAt", "categories"."name" AS "category"
              FROM "products" "p"
              JOIN "productCategories" "pc" on ("pc"."productid" = "p"."id")
-             JOIN "categories" on ("categories"."id" = "pc"."categoryId")
+             JOIN "categories" on ("categories"."id" = "pc"."categoryid")
              WHERE "p"."name" ILIKE $1
              ORDER BY ${columnSort.join(', ')}
-             LIMIT ${limitData} OFFSET ${offset}
+             LIMIT ${limit} OFFSET ${offset}
              `
              console.log(sql)
              const values =[`%${searchKey}%`]
@@ -156,9 +253,9 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
         
         const sql = `
         SELECT * 
-        FROM "products" WHERE "name" ILIKE $1
+        FROM "products" WHERE "name" ILIKE $1 
         ORDER BY ${columnSort.join(', ')}
-        LIMIT ${limitData} OFFSET ${offset}
+        LIMIT ${limit} OFFSET ${offset}
         `
         const values =[`%${searchKey}%`]
         const {rows} = await db.query(sql, values)
@@ -168,23 +265,12 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
         return rows
     }
 
-    const sql = 
-    `
+    const sql = `
     SELECT *
     FROM "products" WHERE "name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true':''}
     ORDER BY "${sortBy}" ${order}
-    LIMIT ${limitData} OFFSET ${offset}
+    LIMIT ${limit} OFFSET ${offset}
     `
-    // `SELECT "p".*,
-    // "t"."name" as "tag"
-    // FROM "products" "p" 
-    
-    // LEFT join "tags" "t" on ("t"."id" = "p"."tagid")
-    // WHERE "p"."name" ILIKE $1 ${best_seller ? 'AND "isRecommended" = true' : ''}
-    // GROUP BY "p"."id", "t"."name"
-    // ORDER BY "p"."${sortBy}" ${order}
-    // LIMIT ${limitData} OFFSET ${offset}
-    // `
     const values =[`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
     if(!rows.length){
@@ -193,34 +279,23 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit, be
     return rows
 }
 
-
-// exports.countAll = async (searchKey='') => {
-//         const sql = `SELECT COUNT("id") AS "counts" FROM "products" WHERE "name" ILIKE $1`
-//         const values = [`%${searchKey}%`]
-//         const {rows} = await db.query(sql, values)
-//         return rows[0].counts
-// }
-
 exports.countAll = async (keyword='')=>{
-    // const visibleColumn = ['id', 'createdAt', 'name', 'basePrice']
-    // const allowOrder = ['asc', 'desc']
-    //const limit = 4;
-    // const offset = (page - 1) * limit
-
-    // sortBy = visibleColumn.includes(sortBy) ? `"p"."${sortBy}"` : '"p"."id"'
-    // order = allowOrder.includes(order) ? order : 'asc'
-
     const sql = `
-    SELECT count(id) as counts
+    SELECT count("id") as "counts"
        
     FROM "products"
     WHERE "name" ILIKE $1`
     const values = [`%${keyword}%`]
-    const { rows } = await db.query(sql, values)
+    const { rows } = await db.query(sql, values) 
     return rows[0].counts
 }
 
 exports.insert = async (data)=>{
+    const queryString = await isStringCheck("products", "name", data.name)
+    if(queryString){
+        throw new Error(isStringCheck)
+    }
+
     const sql = `INSERT INTO "products" 
     ("name","description","basePrice","image","discount","isRecommended")
     VALUES
@@ -232,21 +307,48 @@ exports.insert = async (data)=>{
 } 
 
 exports.update = async (id,data) => { 
-    const column = []
-    const values = []
-    values.push(parseInt(id))
-    for (let item in data){
-        values.push(data[item])
-        column.push(`"${item}"=$${values.length}`)
+    // const column = []
+    // const values = []
+    // values.push(parseInt(id))
+    // for (let item in data){
+    //     values.push(data[item])
+    //     column.push(`"${item}"=$${values.length}`)
+    // }
+    // const sql = `UPDATE "products" SET ${column.join(', ')}, "updateAt" = now() WHERE id=$1 RETURNING *`
+    // const{rows} = await db.query(sql,values)
+    // return rows[0]
+
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
     }
-    const sql = `UPDATE "products" SET ${column.join(', ')}, "updateAt" = now() WHERE id=$1 RETURNING *`
-    const{rows} = await db.query(sql,values)
-    return rows[0]
+
+    const queryId = await isCheck("products", id)                                                                   
+    if(queryId){
+        throw new Error(queryId)
+    }
+
+    if(data.name){
+        const queryString =  await isStringCheck("products", "name", data.name)
+        if(queryString){
+            throw new Error (queryString)
+        }
+    }
+
+    return await updateColumn(id, data, "products")
 }
 
 exports.delete = async(id)=>{
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
+    }
+    
+    // const queryId = await isCheck("products", id)
+    // if(queryId){
+    //     throw new Error(queryId)
+    // }
     const sql = `DELETE FROM "products" WHERE id=$1 RETURNING *`
     const values = [id]
     const {rows} = await db.query(sql,values)
     return rows[0]
 }
+
