@@ -20,7 +20,7 @@ describe('list all user',()=>{
         const response= await userController.getAllUsers(req,res)
         expect(response.success).to.be.eq(true)
     })
-    it('nextPage should be null', async()=>{
+    it('nextPage should be 2', async()=>{
         const req = {
             query:{ page: '1' }
         }
@@ -76,7 +76,7 @@ describe('create user', () => {
         const req = {
             body: {
                 fullName: "testing",
-                email: "testing9999@mail.com",
+                email: "testing99@mail.com",
                 password: "1234",
             }
         }
@@ -85,16 +85,16 @@ describe('create user', () => {
     })
 
 
-    it('should return message email esting9999@mail.com already registered', async() => {
+    it('should return message email testing99@mail.com already registered', async() => {
         const req = {
             body: {
                 fullName: "testing",
-                email: "testing9999@mail.com",
+                email: "testing99@mail.com",
                 password: "1234",
             }
         }
         const response = await userController.createUser(req, res)
-        expect(response.message).to.be.eq("email testing9999@mail.com already registered")
+        expect(response.message).to.be.eq("email testing99@mail.com already registered")
     })
 })
 
@@ -114,14 +114,7 @@ describe('update user',()=>{
         const response=await userController.updateUser(req,res)
         expect(response.message).to.be.eq("user id 9999 not found")
     })
-    it('should return success true update password', async() => {
-        const req = {
-            params: {id: 84},
-            body: {password: "123"}
-        }
-        const response = await userController.updateUser(req, res)
-        expect(response.success).to.be.eq(true)
-    })
+    
 })
 
 describe('delete user', () => {

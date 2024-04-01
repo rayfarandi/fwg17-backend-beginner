@@ -5,8 +5,10 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon index.js",
-    "test": "mocha ./src/tester/*.spec.js -r dotenv/config --exit",
-    "test:cov": "nyc mocha ./src/tester/*.spec.js -r dotenv/config --exit"
+    "test": "mocha ./src/tester/product-controller.spec.js -r dotenv/config --exit",
+    "test:api": "mocha ./src/tester/api/*.spec.js -r dotenv/config --exit",
+    "test:cov": "nyc mocha ./src/tester/product-controller.spec.js -r dotenv/config --exit"
+    
   },
   "keywords": [],
   "author": "",

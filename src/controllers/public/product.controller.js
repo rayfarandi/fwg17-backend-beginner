@@ -1,6 +1,6 @@
 const productModel = require('../../models/products.model')
 
-const errorHandler = require('../../moduls/handling')
+const { errorHelper } = require('../../moduls/check')
 
 
 exports.getAllproducts = async (req, res) => {   
@@ -28,7 +28,7 @@ exports.getAllproducts = async (req, res) => {
             results: listProducts
         })
     } catch (error) {
-        errorHandler(error, res)
+        errorHelper(error, res)
     }
 }
 
@@ -59,7 +59,7 @@ exports.getDetailproduct = async (req, res) => {
         })
 
     // } catch (error) {
-    //     errorHandler(error, res)
+    //     errorHelper(error, res)
     // }
     }catch(err){
         console.error(err)
