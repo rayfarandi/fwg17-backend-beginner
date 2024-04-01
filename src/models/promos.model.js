@@ -60,6 +60,13 @@ exports.findOne = async (id)=>{
     return rows[0]
 } 
 
+exports.countAll = async (searchKey='') => {
+    const sql = `SELECT COUNT("id") AS "counts" FROM "promo" WHERE "name" ILIKE $1`
+    const values = [`%${searchKey}%`]
+    const {rows} = await db.query(sql, values)
+    return rows[0].counts
+}
+
 exports.insert = async (data)=>{
     const queryName = await isStringCheck("promo", "name", body.name) 
     if(queryName){

@@ -43,6 +43,13 @@ exports.getDetailPromo = async (req, res) => {
     }
 }
 
+exports.countAll = async (searchKey='') => {
+    const sql = `SELECT COUNT("id") AS "counts" FROM "promo" WHERE "name" ILIKE $1`
+    const values = [`%${searchKey}%`]
+    const {rows} = await db.query(sql, values)
+    return rows[0].counts
+}
+
 
 // exports.createpromo = async (req, res) => {
 //     try {

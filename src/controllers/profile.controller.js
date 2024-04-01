@@ -1,6 +1,6 @@
 const userModel = require('../models/users.model')
 const uploadMiddlware = require('../middlewares/upload.middlewares')
-const errorHandler  = require('../moduls/handling')
+const errorHelper  = require('../moduls/check')
 const upload = uploadMiddlware('profile').single('picture')
 const fs = require('fs/promises')
 const path =require('path')
@@ -26,7 +26,7 @@ exports.updateProfile = (req,res)=>{
     try{
             if(error){
                 throw error
-                // return errorHandler(error,res)
+                // return errorHelper(error,res)
             }
             
             const {id} = req.user
@@ -56,7 +56,7 @@ exports.updateProfile = (req,res)=>{
             message:'ok',
             results: user
         })}catch(error){
-            errorHandler(error,res)
+            errorHelper(error,res)
         }
         })
     
