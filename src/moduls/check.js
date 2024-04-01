@@ -1,59 +1,6 @@
 const db = require('../lib/db.lib')
 const argon = require('argon2')
 
-exports.isCheck = async (table, id) => {
-    try {
-        const query = `SELECT "id" FROM ${table}`
-        const {rows} = await db.query(query)
-        const results = rows.map(item => item.id)
-        if(results.indexOf(id) === -1){
-            throw new Error(`data with id ${id} not found`)
-        }
-    } catch (error) {
-        return error.message
-    }
-}
-
-exports.isStringCheck = async (table, uniqueColumn, searchKey) => {
-    const sql = `SELECT * FROM ${table} WHERE ${uniqueColumn} ILIKE $1`
-    let values = [searchKey]
-    const {rows} = await db.query(sql, values)
-
-    if(rows.length){
-        if(uniqueColumn === "name"){
-            throw new Error(`${table} with ${uniqueColumn} ${rows[0].name} already exist`)
-        }else if(uniqueColumn === "email"){
-            throw new Error(`${uniqueColumn} ${rows[0].email} already registered`)
-        }else if(uniqueColumn === "code"){
-            throw new Error(`${uniqueColumn} ${rows[0].code} already exist`)
-        }
-    }
-}
-
-
-
-exports.updateColumn = async (id, data, table) => {
-    if(Object.hasOwn(data, 'password')){
-        data.password = await argon.hash(data.password)
-    }
-
-
-
-    const column = Object.keys(data)
-    let values = [id, ...Object.values(data)]
-    const set = column.map((item, index) => {
-        return `"${item}" = $${index + 2}`
-    })
-
-    if(!set.length){
-        return `No data has been modified`
-    }
-
-    const sql = `UPDATE ${table} SET ${set.join(', ')}, "updateAt" = now() WHERE "id" = $1 RETURNING *`
-    const {rows} = await db.query(sql, values)
-    return rows[0]
-}
-
 exports.errorHelper = (error, res) => {
     console.log(error)
     if(error.code === "23502"){ // error not null constraint
@@ -110,3 +57,63 @@ exports.errorHelper = (error, res) => {
         messages: `Internal server error`})
 }
 
+
+
+exports.isCheck = async (table, id) => {
+    try {
+        const query = `SELECT "id" FROM ${table}`
+        const {rows} = await db.query(query)
+        const results = rows.map(item => item.id)
+        if(results.indexOf(id) === -1){
+            throw new Error(`data with id ${id} not found`)
+        }
+    } catch (error) {
+        return error.message
+    }
+}
+
+exports.isStringCheck = async (table, uniqueColumn, searchKey) => {
+    const sql = `SELECT * FROM 
+    ${table} WHERE ${uniqueColumn} ILIKE $1`
+    let values = [searchKey]
+    const {rows} = await db.query(sql, values)
+
+    if(rows.length){
+        if(uniqueColumn === "name"){
+            throw new Error(`${table} with ${uniqueColumn} ${rows[0].name} already exist`)
+        }else if(uniqueColumn === "email"){
+            throw new Error(`${uniqueColumn} ${rows[0].email} already registered`)
+        }else if(uniqueColumn === "code"){
+            throw new Error(`${uniqueColumn} ${rows[0].code} already exist`)
+        }
+    }
+}
+
+
+
+exports.updateColumn = async (id, data, table) => {
+    if(Object.hasOwn(data, 'password')){
+        data.password = await argon.hash(data.password)
+    }
+
+
+
+    const column = Object.keys(data)
+    let values = [id, ...Object.values(data)]
+    const set = column.map((item, index) => {
+        return `"${item}" = $${index + 2}`
+    })
+
+    if(!set.length){
+        return `No data has been modified`
+    }
+
+    const sql = `UPDATE ${table} SET ${set.join(', ')}, "updateAt" = now() WHERE "id" = $1 RETURNING *`
+    const {rows} = await db.query(sql, values)
+    return rows[0]
+}
+
+exports.randNumGen = () => {
+    const result = Math.random(1).toPrecision(6).slice(2)
+    return result
+}

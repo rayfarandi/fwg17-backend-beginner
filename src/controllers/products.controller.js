@@ -1,4 +1,6 @@
-import { errorHandler } from '../moduls/handling'
+
+const { errorHelper } = require('../moduls/check')
+
 const productModel = require('../models/products.model')
 
 exports.getAllproducts = async (req, res) => {   
@@ -26,13 +28,13 @@ exports.getAllproducts = async (req, res) => {
             results: listProducts
         })
     } catch (error) {
-        errorHandler(error, res)
+        errorHelper(error, res)
     }
 }
 
 exports.getProductDetail = async (req, res) =>{
-    const {id} = req.params
     try{
+        const {id} = Number(req.params.id)
         const products = await productModel.findCombine(id)
         console.log(products)
         return res.json({
@@ -47,6 +49,6 @@ exports.getProductDetail = async (req, res) =>{
     //     })
     // }
     catch(error){
-        errorHandler(error,res)
+        errorHelper(error,res)
     }
 }

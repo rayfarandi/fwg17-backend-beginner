@@ -67,7 +67,7 @@ exports.findCombine = async (id) => {
     `
     const values = [id]
     const {rows} = await db.query(sql, values)
-    return rows
+    return rows[0]
 }
 
 
