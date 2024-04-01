@@ -1,5 +1,6 @@
 const db = require('../lib/db.lib')
 const argon = require('argon2')
+const multer = require('multer')
 
 exports.errorHelper = (error, res) => {
     console.log(error)
@@ -117,3 +118,31 @@ exports.randNumGen = () => {
     const result = Math.random(1).toPrecision(6).slice(2)
     return result
 }
+
+
+
+
+exports.multerErrorHelper = (err, req, res, next) => {
+    console.log("Multer Error Handler:", err); // Tambahkan log untuk melihat apakah kesalahan tertangkap
+    console.log("Error code:", err.code);
+    console.log("Error message:", err.message);
+
+    if (err.code === 'LIMIT_FILE_SIZE') {
+        return res.status(400).json({
+            success: false,
+            message: 'File size the maximum limit 1.5 MB'
+        });
+    } else if (err.message === 'File extension allowed : JPEG, JPG, and PNG only') {                              
+        return res.status(400).json({
+            success: false,
+            message: err.message
+        });
+    } else {
+        return res.status(500).json({
+            success: false,
+            message: `Internal server error`
+        });
+    }
+};
+
+

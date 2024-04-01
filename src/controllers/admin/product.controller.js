@@ -1,5 +1,5 @@
 const productModel = require('../../models/products.model')
-const uploadMiddlware = require('../../middlewares/upload.middlewares')
+const uploadMiddlware = require('../../middleware/upload.middleware')
 const upload = uploadMiddlware('products').single('image')
 const {errorHelper} = require('../../moduls/check')
 const fs = require('fs/promises')

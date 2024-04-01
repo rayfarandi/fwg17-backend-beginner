@@ -1,6 +1,6 @@
 const router = require('express').Router()
-const autMiddleware = require('../middlewares/auth.middleware')
-const roleCheckMiddleware = require('../middlewares/roleCheck.middleware')
+const autMiddleware = require('../middleware/auth.middleware')
+const roleCheckMiddleware = require('../middleware/roleCheck.middleware')
 
 router.use('/auth',require('./auth.router'))
 router.use('/admin',autMiddleware,roleCheckMiddleware('admin'),require('./admin'))

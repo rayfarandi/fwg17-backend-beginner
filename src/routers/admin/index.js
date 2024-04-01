@@ -1,7 +1,7 @@
 const adminRouter = require('express').Router()
 
 
-adminRouter.use('/users',require('./users.router'))
+adminRouter.use('/users', require('./users.router'))
 
 adminRouter.use('/products',require('./products.router'))
 adminRouter.use('/productSizes',require('./productSizes.router'))

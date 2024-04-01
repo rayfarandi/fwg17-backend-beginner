@@ -3,7 +3,7 @@ const productRouter = require('express').Router()
 
 const productController = require ('../../controllers/admin/product.controller')
 //adalah fungsi dari variabel 'productController' yang mengimport modul dari lokasi product.controller
-const uploadMiddlware = require('../../middlewares/upload.middlewares')
+const uploadMiddlware = require('../../middleware/upload.middleware')
 // const insertMiddlware = require('../../middlewares/insert.middlewares')
 // tidak memerlukan middlware baru
 

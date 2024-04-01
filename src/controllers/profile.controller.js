@@ -1,6 +1,6 @@
 const userModel = require('../models/users.model')
-const uploadMiddlware = require('../middlewares/upload.middlewares')
-const errorHelper  = require('../moduls/check')
+const uploadMiddlware = require('../middleware/upload.middleware')
+const {errorHelper}  = require('../moduls/check')
 const upload = uploadMiddlware('profile').single('picture')
 const fs = require('fs/promises')
 const path =require('path')
