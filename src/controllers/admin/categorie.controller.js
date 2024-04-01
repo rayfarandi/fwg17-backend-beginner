@@ -36,7 +36,7 @@ exports.getDetailCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'detail category',
-            result: category                                                  
+            results: category                                                  
         })
     } catch (error) {
        return errorHelper(error, res)
@@ -50,7 +50,7 @@ exports.createCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'create category successfully',
-            result: category                                                   
+            results: category                                                   
         })
         
     } catch (error) {
@@ -71,7 +71,7 @@ exports.updateCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'update category successfully',
-            result: category                                                   
+            results: category                                                   
         })
     } catch (error) {
       return  errorHelper(error, res)
@@ -85,7 +85,7 @@ exports.deleteCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'delete category successfully',
-            result: category                                                   
+            results: category                                                   
         })
     } catch (error) {
       return  errorHelper(error, res)

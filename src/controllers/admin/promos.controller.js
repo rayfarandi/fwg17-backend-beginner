@@ -36,7 +36,7 @@ exports.getDetailPromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'detail promo',
-            result: promo                                                  
+            results: promo                                                  
         })
     } catch (error) {
         errorHelper(error, res)
@@ -79,7 +79,7 @@ exports.createPromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'create promo successfully',
-            result: promo                                                   
+            results: promo                                                   
         })
         
     } catch (error) {
@@ -101,7 +101,7 @@ exports.updatePromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'update promo successfully',
-            result: promo                                                   
+            results: promo                                                   
         })
     } catch (error) {
         errorHelper(error, res)
@@ -115,7 +115,7 @@ exports.deletePromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'delete promo successfully',
-            result: promo                                                   
+            results: promo                                                   
         })
     } catch (error) {
         errorHelper(error, res)
