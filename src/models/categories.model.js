@@ -1,5 +1,6 @@
 const db = require('../lib/db.lib')
-const { isStringCheck, isCheck,updateColumn } = require('../moduls/check')
+const { isExist, isStringExist, updateColumn } = require('../moduls/check')
+
 
 exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) => {
     const orderType = ["ASC", "DESC"]
@@ -71,7 +72,7 @@ exports.findOne = async (id) => {
 
 
 exports.insert = async (body) => {
-    const queryString = await isStringCheck("categories", "name", body.name)
+    const queryString = await isStringExist("categories", "name", body.name)
     if(queryString){
         throw new Error(queryString)
     }
@@ -88,12 +89,12 @@ exports.update = async (id, body) => {
         throw new Error(`invalid input`)
     }
 
-    const queryId = await isCheck("categories", id)
+    const queryId = await isExist("categories", id)
     if(queryId){
         throw new Error(queryId)
     }
 
-    const queryString =  await isStringCheck("categories", "name", body.name)
+    const queryString =  await isStringExist("categories", "name", body.name)                                       // melakukan query terlebih dahulu sebelum memasukan data, untuk mengecek apakah ada data string yg sama tapi hanya berbeda huruf kecil dan huruf besarnya saja.
     if(queryString){
         throw new Error (queryString)
     }
@@ -107,7 +108,7 @@ exports.delete = async (id) => {
         throw new Error(`invalid input`)
     }
     
-    const queryId = await isCheck("categories", id)
+    const queryId = await isExist("categories", id)
     if(queryId){
         throw new Error(queryId)
     }

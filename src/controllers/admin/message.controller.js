@@ -1,7 +1,8 @@
-const messageModel = require('../../models/messages.model')
-const { errorHelper } = require('../../moduls/check')
+const messageModel = require('../../models/message.model')
+const { errorHandler } = require('../../moduls/check')
 
-exports.getAllmessages = async (req,res)=>{
+
+exports.getAllMessages = async (req, res) => {       
     try {
         const {sortBy, order, page=1, limit} = req.query
         const limitData = parseInt(limit) || 5
@@ -26,11 +27,12 @@ exports.getAllmessages = async (req,res)=>{
             results: listMessages                                                    
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
-exports.getDetailmessage = async (req,res)=>{
+
+exports.getDetailMessage = async (req, res) => {                                        
     try {
         const message = await messageModel.findOne(parseInt(req.params.id))
         return res.json({                                                              
@@ -39,12 +41,12 @@ exports.getDetailmessage = async (req,res)=>{
             result: message                                                  
         })
     } catch (error) {
-        errorHelper(error, res)
-    }  
+        errorHandler(error, res)
+    }
 }
 
 
-exports.createmessage = async (req, res) => {
+exports.createMessage = async (req, res) => {
     try {
         const message = await messageModel.insert(req.body) 
         return res.json({                                                              
@@ -54,13 +56,12 @@ exports.createmessage = async (req, res) => {
         })
         
     } catch (error) {
-        return errorHelper(error, res, '')
+        return errorHandler(error, res, '')
     }
 }
 
 
-
-exports.updatemessage = async (req, res) => {
+exports.updateMessage = async (req, res) => {
     try {
         const message = await messageModel.update(parseInt(req.params.id), req.body)
         if(message === "No data has been modified"){
@@ -75,12 +76,12 @@ exports.updatemessage = async (req, res) => {
             result: message                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
 
-exports.deletemessage = async(req,res)=>{
+exports.deleteMessage = async (req, res) => {
     try {
         const message = await messageModel.delete(parseInt(req.params.id)) 
         return res.json({                                                              
@@ -89,6 +90,6 @@ exports.deletemessage = async(req,res)=>{
             result: message                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }

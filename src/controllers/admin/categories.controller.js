@@ -1,6 +1,7 @@
 const categoriesModel = require('../../models/categories.model')
-const { errorHelper } = require('../../moduls/check')
- 
+const { errorHandler } = require('../../moduls/check')
+
+
 exports.getAllCategories = async (req, res) => {       
     try {
         const {searchKey, sortBy, order, page=1, limit} = req.query  
@@ -20,13 +21,13 @@ exports.getAllCategories = async (req, res) => {
                 currentPage: parseInt(page),
                 totalPage,
                 nextPage: nextPage <= totalPage ? nextPage : null,
-                prevPage: prevPage > 1 ? prevPage : null,
+                prevPage: prevPage >= 1 ? prevPage : null,
                 totalData: parseInt(count)
             },
             results: listCategories                                                    
         })
     } catch (error) {
-       return errorHelper(error, res)
+        errorHandler(error, res)
     }}
 
 
@@ -36,10 +37,10 @@ exports.getDetailCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'detail category',
-            results: category                                                  
+            result: category                                                  
         })
     } catch (error) {
-       return errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -50,11 +51,11 @@ exports.createCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'create category successfully',
-            results: category                                                   
+            result: category                                                   
         })
         
     } catch (error) {
-      return  errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -71,10 +72,10 @@ exports.updateCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'update category successfully',
-            results: category                                                   
+            result: category                                                   
         })
     } catch (error) {
-      return  errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -85,9 +86,9 @@ exports.deleteCategory = async (req, res) => {
         return res.json({                                                              
             success: true,
             messages: 'delete category successfully',
-            results: category                                                   
+            result: category                                                   
         })
     } catch (error) {
-      return  errorHelper(error, res)
+        errorHandler(error, res)
     }
 }

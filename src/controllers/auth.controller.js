@@ -1,83 +1,99 @@
-const userModel = require('../models/users.model')
+const userModel = require('../models/user.model')
 const argon = require('argon2')
 const jwt = require('jsonwebtoken')
-const { errorHelper } = require('../moduls/check')
-
-
+const { errorHandler } = require('../moduls/check')
 
 exports.login = async (req, res) => { 
     try {
-        const {email, password} = req.body
+        const {email, password} = req.body                                                              // destruct data dari req.body                           
+        
         if(!email){
-            throw new Error(`enter your email`)
+            throw new Error(`please enter your email`)
         }
-        const user = await userModel.findOneByEmail(email)
+        
+        const user = await userModel.findOneByEmail(email)                                              // melakukan pengecekan apakah email ada didatabase dengan kata lain apa sudah terdaftar
         if(!user){
-            throw new Error(`email not registered, create new account`)
+            throw new Error(`email not registered`)                                                     // jika email tidak di temukan di database maka lempar error ke catch 
         }
+        
         if(!password){
-            throw new Error(`enter your password`)
+            throw new Error(`please enter your password`)
         }
-        const verify = await argon.verify(user.password, password)
+    
+        const verify = await argon.verify(user.password, password)                                      // pengecekan apakah password benar jika tidak maka lempar error ke catch
         if(!verify){
-            throw new Error(`wrong password, try again`)
+            throw new Error(`wrong password`)
         }
-        const payload = {
+
+        const payload = {                                                                               // membuat data payload yg berisi informasi penggunaa biasanya id dan role untuk membuat token
             id: user.id,
             role: user.role
         }
 
-        const token = jwt.sign(payload, process.env.APP_SECRET || 'secretKey')
-        return res.json({ 
+        const token = jwt.sign(payload, process.env.APP_SECRET || 'secretKey')                         // membuat token yg berisi data payload dan APP_SECRET. token otomatis di simpan di http request di dalam headers authorization
+
+        return res.json({                                                                              // server mengirim respon saat login berhasil
             success: true,
-            message: `Login succes, redirec to Home`,
+            message: `Login success`,
             results: {
-                token: token} 
-            })
+                token: token
+            }
+        })
+
     } catch (error) {
-        return errorHelper(error, res)
+        errorHandler(error, res)
     }                                 
 }
 
 
-exports.register = async (req,res)=>{
-    try{
-        const {fullName,email,password,confirmPassword} = req.body
+exports.register = async (req, res) => {
+    try {
+        const {fullName, email, password, confirmPassword,address} = req.body
+        
+
         if(!fullName){
-            throw new Error(`Fullname empty, please complete it`)
-        }
-        if(!email){
-            throw new Error(`Email empty, please complete it`)
+            throw new Error(`Full Name cannot be empty`)
         }
 
-        const user = await userModel.findOneByEmail(email)
+        if(!email){
+            throw new Error(`email cannot be empty`)
+        }
+        if(!address){
+            throw new Error(`address cannot be empty`)
+        }
+
+        const user = await userModel.findOneByEmail(email)            
         if(user){
-            throw new Error(`Email already exsit`)
+            throw new Error(`email already registered`)                                                
         }
+
         if(!password){
-            throw new Error(`Password empty, please complete it`)
+            throw new Error(`password cannot be empty`)
         }
+
         if(!confirmPassword){
-            throw new Error(`Confirm password empty, please complete it`)
+            throw new Error(`please confirm password`)
         }
+
         if(password !== confirmPassword){
-            throw new Error(`password n confirm password not match, please complete it`)
+            throw new Error(`wrong confirm password`)
         }
-        const data = await userModel.insert({
+
+        await userModel.insert({                                                        
             fullName,
             email,
             password,
-            role: "customer"
+            role: "customer",
+            address
         })
-        
+
         return res.json({
             success: true,
-            message: 'registrasi succesfully',
-            results: data
+            message: 'Register success'
         })
+    } catch (error) {
+        errorHandler(error, res)
     }
-    catch(error){
-       return errorHelper(error,res)
-    }
-
 }
+
+
