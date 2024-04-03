@@ -1,7 +1,8 @@
-const promoModel = require('../../models/promos.model')
-const { errorHelper } = require('../../moduls/check')
+const promoModel = require('../../models/promo.model')
+const { errorHandler } = require('../../moduls/check')
 
-exports.getAllpromos = async (req,res)=>{
+
+exports.getAllPromo = async (req, res) => {       
     try {
         const {searchKey, sortBy, order, page=1, limit} = req.query
         const limitData = parseInt(limit) || 5
@@ -26,9 +27,10 @@ exports.getAllpromos = async (req,res)=>{
             results: listPromo                                                    
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
+
 
 exports.getDetailPromo = async (req, res) => {                                        
     try {
@@ -36,57 +38,27 @@ exports.getDetailPromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'detail promo',
-            results: promo                                                  
+            result: promo                                                  
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
-exports.countAll = async (searchKey='') => {
-    const sql = `SELECT COUNT("id") AS "counts" FROM "promo" WHERE "name" ILIKE $1`
-    const values = [`%${searchKey}%`]
-    const {rows} = await db.query(sql, values)
-    return rows[0].counts
-}
 
-
-// exports.createpromo = async (req, res) => {
-//     try {
-//         const promo = await promoModel.insert(req.body)
-//         return res.json({
-//             success: true,
-//             message: 'create promo success',
-//             results: promo
-//         })
-//     } catch (err) {
-//         console.log(JSON.stringify(err))
-//         if(err.code === "23502"){
-//             return res.status(400).json({
-//                 success: false,
-//                 message: `${err.column} cannot be empty`
-//         })
-//     }
-//         return res.status(400).json({
-//             success: false,
-//             message: 'error'
-//         })
-//     }
-// }
 exports.createPromo = async (req, res) => {
     try {
         const promo = await promoModel.insert(req.body) 
         return res.json({                                                              
             success: true,
             message: 'create promo successfully',
-            results: promo                                                   
+            result: promo                                                   
         })
         
     } catch (error) {
-        return errorHelper(error, res)
+        return errorHandler(error, res)
     }
 }
-
 
 
 exports.updatePromo = async (req, res) => {
@@ -101,10 +73,10 @@ exports.updatePromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'update promo successfully',
-            results: promo                                                   
+            result: promo                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -115,9 +87,9 @@ exports.deletePromo = async (req, res) => {
         return res.json({                                                              
             success: true,
             message: 'delete promo successfully',
-            results: promo                                                   
+            result: promo                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }

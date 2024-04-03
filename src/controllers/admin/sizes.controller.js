@@ -1,14 +1,14 @@
-const tagsModel = require('../../models/tags.model')
+const sizesModel = require('../../models/sizes.model')
 const { errorHandler } = require('../../moduls/check')
 
 
-exports.getAllTags = async (req, res) => {       
+exports.getAllProductSize = async (req, res) => {       
     try {
-        const {searchKey, sortBy, order, page=1, limit} = req.query
+        const {sortBy, order, page=1, limit} = req.query
         const limitData = parseInt(limit) || 5
 
-        const count = await tagsModel.countAll(searchKey)      
-        const listTags = await tagsModel.findAll(searchKey, sortBy, order, page, limitData)
+        const count = await sizesModel.countAll()  
+        const listSizes = await sizesModel.findAll(sortBy, order, page, limitData)
         
         const totalPage = Math.ceil(count / limitData)
         const nextPage = parseInt(page) + 1
@@ -16,7 +16,7 @@ exports.getAllTags = async (req, res) => {
 
         return res.json({                                                              
             success: true,
-            message: `List all tags`,
+            message: `List all sizes`,
             pageInfo: {
                 currentPage: parseInt(page),
                 totalPage,
@@ -24,7 +24,7 @@ exports.getAllTags = async (req, res) => {
                 prevPage: prevPage >= 1 ? prevPage : null,
                 totalData: parseInt(count)
             },
-            results: listTags                                                    
+            results: listSizes                                                    
         })
     } catch (error) {
         errorHandler(error, res)
@@ -32,13 +32,13 @@ exports.getAllTags = async (req, res) => {
 }
 
 
-exports.getDetailTag = async (req, res) => {                                        
+exports.getDetailProductSize = async (req, res) => {                                        
     try {
-        const tag = await tagsModel.findOne(parseInt(req.params.id))
+        const size = await sizesModel.findOne(parseInt(req.params.id))
         return res.json({                                                              
             success: true,
-            message: 'detail tag',
-            result: tag                                                  
+            message: 'detail size',
+            result: size                                                  
         })
     } catch (error) {
         errorHandler(error, res)
@@ -46,13 +46,13 @@ exports.getDetailTag = async (req, res) => {
 }
 
 
-exports.createTag = async (req, res) => {
+exports.createProductSize = async (req, res) => {
     try {
-        const tag = await tagsModel.insert(req.body) 
+        const size = await sizesModel.insert(req.body) 
         return res.json({                                                              
             success: true,
-            message: 'create tag successfully',
-            result: tag                                                   
+            messages: 'create size successfully',
+            results: size                                                   
         })
         
     } catch (error) {
@@ -61,19 +61,19 @@ exports.createTag = async (req, res) => {
 }
 
 
-exports.updateTag = async (req, res) => {
+exports.updateProductSize = async (req, res) => {
     try {
-        const tag = await tagsModel.update(parseInt(req.params.id), req.body) 
-        if(tag === "No data has been modified"){
+        const size = await sizesModel.update(parseInt(req.params.id), req.body)
+        if(size === "No data has been modified"){
             return res.status(200).json({                                                              
                 success: true,
-                message: tag                                                 
+                message: size                                                 
             })
         }
         return res.json({                                                              
             success: true,
-            message: 'update tag successfully',
-            result: tag                                                   
+            messages: 'update size successfully',
+            results: size                                                   
         })
     } catch (error) {
         errorHandler(error, res)
@@ -81,13 +81,13 @@ exports.updateTag = async (req, res) => {
 }
 
 
-exports.deleteTag = async (req, res) => {
+exports.deleteProductSize = async (req, res) => {
     try {
-        const tag = await tagsModel.delete(parseInt(req.params.id)) 
+        const size = await sizesModel.delete(parseInt(req.params.id)) 
         return res.json({                                                              
             success: true,
-            message: 'delete tag successfully',
-            result: tag                                                   
+            messages: 'delete size successfully',
+            results: size                                                   
         })
     } catch (error) {
         errorHandler(error, res)

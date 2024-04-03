@@ -1,5 +1,6 @@
 const db = require('../lib/db.lib')
-const { updateColumn,isStringCheck,isCheck } = require('../moduls/check')
+const { isExist, isStringExist, updateColumn } = require('../moduls/check')
+
 
 exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) => {
     const orderType = ["ASC", "DESC"]
@@ -47,7 +48,16 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) =>
     return rows
 }
 
-exports.findOne = async (id)=>{
+
+exports.countAll = async (searchKey='') => {
+    const sql = `SELECT COUNT("id") AS "counts" FROM "promo" WHERE "name" ILIKE $1`
+    const values = [`%${searchKey}%`]
+    const {rows} = await db.query(sql, values)
+    return rows[0].counts
+}
+
+
+exports.findOne = async (id) => {
     const sql = `
     SELECT *
     FROM "promo" WHERE "id" = $1
@@ -58,55 +68,50 @@ exports.findOne = async (id)=>{
         throw new Error(`promo with id ${id} not found `)
     }
     return rows[0]
-} 
-
-exports.countAll = async (searchKey='') => {
-    const sql = `SELECT COUNT("id") AS "counts" FROM "promo" WHERE "name" ILIKE $1`
-    const values = [`%${searchKey}%`]
-    const {rows} = await db.query(sql, values)
-    return rows[0].counts
 }
 
-exports.insert = async (data)=>{
-    const queryName = await isStringCheck("promo", "name", body.name) 
+
+exports.insert = async (body) => {
+    const queryName = await isStringExist("promo", "name", body.name) 
     if(queryName){
         throw new Error(queryName)
     }
 
-    const queryCode = await isStringCheck("promo", "code", body.code)
+    const queryCode = await isStringExist("promo", "code", body.code)
     if(queryCode){
         throw new Error(queryCode)
     }
 
     const sql = `
     INSERT INTO "promo"
-    ("name", "code", "description", "percentage", "expireadAt", "maximumPromo", "minimumAmount")
+    ("name", "code", "description", "percentage", "isExpired", "maximumPromo", "minimumAmount")
     VALUES
     ($1, $2, $3, $4, $5, $6, $7)
     RETURNING *
     `
-    const values = [body.name, body.code, body.description, body.percentage, body.expireadAt, body.maximumPromo, body.minimumAmount]
+    const values = [body.name, body.code, body.description, body.percentage, body.isExpired, body.maximumPromo, body.minimumAmount]
     const {rows} = await db.query(sql, values)
     return rows[0]
-} 
+}
 
-exports.updatepromo = async (data) => {
+
+exports.update = async (id, body) => {
     if(isNaN(id)){
         throw new Error(`invalid input`)
     }
 
-    const queryId = await isCheck("promo", id)
+    const queryId = await isExist("promo", id)
     if(queryId){
         throw new Error(queryId)
     }
 
     if(body.name){
-        const queryString =  await isStringCheck("promo", "name", body.name)
+        const queryString =  await isStringExist("promo", "name", body.name)
         if(queryString){
             throw new Error (queryString)
         } 
     }else if(body.code){
-        const queryString =  await isStringCheck("promo", "code", body.code)
+        const queryString =  await isStringExist("promo", "code", body.code)
         if(queryString){
             throw new Error (queryString)
         } 
@@ -115,12 +120,13 @@ exports.updatepromo = async (data) => {
     return await updateColumn(id, body, "promo")
 }
 
+
 exports.delete = async (id) => {
     if(isNaN(id)){
         throw new Error(`invalid input`)
     }
 
-    const queryId = await isCheck("promo", id)
+    const queryId = await isExist("promo", id)
     if(queryId){
         throw new Error(queryId)
     }

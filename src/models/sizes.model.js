@@ -1,5 +1,5 @@
 const db = require('../lib/db.lib')
-const { isExist } = require('../moduls/check')
+const { isExist, updateColumn } = require('../moduls/check')
 
 
 exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
@@ -10,7 +10,7 @@ exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
     const offset = (page - 1) * limitData
 
     if(typeof sortBy === "object"){
-        const sortByColumn = ['id', 'productId', 'categoryId', 'createdAt']
+        const sortByColumn = ['id', 'additionalPrice', 'createdAt']
         let columnSort = []
 
         sortBy.forEach(item => {
@@ -21,7 +21,7 @@ exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
     
         const sql = `
         SELECT *
-        FROM "productCategories"
+        FROM "sizes"
         ORDER BY ${columnSort.join(', ')}
         LIMIT ${limitData} OFFSET ${offset}
         `
@@ -35,7 +35,7 @@ exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
 
     const sql = `
     SELECT *
-    FROM "productCategories"
+    FROM "sizes"
     ORDER BY "${sortBy}" ${order}
     LIMIT ${limitData} OFFSET ${offset}
     `
@@ -51,62 +51,61 @@ exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
 
 
 exports.countAll = async () => {
-    const sql = `SELECT COUNT("id") AS "counts" FROM "productCategories"`
+    const sql = `SELECT COUNT("id") AS "counts" FROM "sizes"`
     const values = []
     const {rows} = await db.query(sql, values)
     return rows[0].counts
 }
 
 
-exports.findOne = async (id) => {                                                                             
+exports.findOne = async (id) => { 
     const sql = `
     SELECT *
-    FROM "productCategories" WHERE "id" = $1
+    FROM "sizes" WHERE "id" = $1
     `
     const  values = [id]
     const {rows} = await db.query(sql, values)
     if(!rows.length){
-        throw new Error(`productCategory with id ${id} not found `)
+        throw new Error(`size with id ${id} not found `)
     }
     return rows[0]
 }
 
 
 exports.insert = async (body) => {
-    const query = `select "productId", "categoryId" FROM "productCategories"`
-    const result = await db.query(query)
-    result.rows.forEach(item => {
-        if(item.productId === parseInt(body.productId) && item.categoryId === parseInt(body.categoryId)){
-            throw new Error(`data is already exist`)
-        }
-    })
-
-
     const sql = `
-    INSERT INTO "productCategories" ("productId", "categoryId")
-    VALUES ($1, $2) RETURNING *`
-    const values = [body.productId, body.categoryId]
+    INSERT INTO "sizes"("size", "additionalPrice") VALUES ($1, $2) RETURNING *`
+    const values = [body.size, body.additionalPrice]
     const {rows} = await db.query(sql, values)
     return rows[0]
 }
 
 
 exports.update = async (id, body) => {
-    const queryId = await isExist("productCategories", id)
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
+    }
+
+    const queryId = await isExist("sizes", id)
     if(queryId){
         throw new Error(queryId)
     }
-    return await updateColumn(id, body, "users")
+    return await updateColumn(id, body, "sizes")
 }
 
 
 exports.delete = async (id) => {
-    const queryId = await isExist("productCategories", id)
+    if(isNaN(id)){
+        throw new Error(`invalid input`)
+    }
+
+    const queryId = await isExist("sizes", id)
     if(queryId){
         throw new Error(queryId)
     }
-    const sql = `DELETE FROM "productCategories" WHERE "id" = $1 RETURNING *`
+    const sql = `DELETE FROM "sizes" WHERE "id" = $1 RETURNING *`
     const values = [id]
     const {rows} = await db.query(sql, values)
+    console.log(rows)
     return rows[0]
 }

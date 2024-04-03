@@ -10,7 +10,7 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) =>
     const offset = (page - 1) * limitData
 
     if(typeof sortBy === "object"){
-        const sortByColumn = ['id', 'name', 'createdAt']
+        const sortByColumn = ['id', 'name', 'additionalPrice', 'createdAt']
         let columnSort = []
 
         sortBy.forEach(item => {
@@ -21,7 +21,7 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) =>
     
         const sql = `
         SELECT *
-        FROM "tags" WHERE "name" ILIKE $1
+        FROM "variant" WHERE "name" ILIKE $1
         ORDER BY ${columnSort.join(', ')}
         LIMIT ${limitData} OFFSET ${offset}
         `
@@ -35,11 +35,10 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) =>
 
     const sql = `
     SELECT *
-    FROM "tags" WHERE "name" ILIKE $1
+    FROM "variant" WHERE "name" ilike $1
     ORDER BY "${sortBy}" ${order}
     LIMIT ${limitData} OFFSET ${offset}
     `
-    console.log(sortBy)
     console.log(sql)
     const values = [`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
@@ -51,36 +50,37 @@ exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) =>
 
 
 exports.countAll = async (searchKey='') => {
-    const sql = `SELECT COUNT("id") AS "counts" FROM "tags" WHERE "name" ILIKE $1`
+    const sql = `SELECT COUNT("id") AS "counts" FROM "variant" WHERE "name" ILIKE $1`
     const values = [`%${searchKey}%`]
     const {rows} = await db.query(sql, values)
     return rows[0].counts
 }
 
 
-exports.findOne = async (id) => { 
+exports.findOne = async (id) => {
     const sql = `
     SELECT *
-    FROM "tags" WHERE "id" = $1
+    FROM "variant" WHERE "id" = $1
     `
     const  values = [id]
     const {rows} = await db.query(sql, values)
     if(!rows.length){
-        throw new Error(`tag with id ${id} not found `)
+        throw new Error(`variant with id ${id} not found `)
     }
     return rows[0]
 }
 
 
-exports.insert = async (body) => {
-    const queryString = await isStringExist("tags", "name", body.name)
+exports.insert = async (data) => {
+    const queryString = await isStringExist("variant", "name", data.name)
     if(queryString){
-        throw new Error(queryString)
+        throw new Error(isStringExist)
     }
 
     const sql = `
-    INSERT INTO "tags" ("name") VALUES ($1) RETURNING *`
-    const values = [body.name]
+    INSERT INTO "variant"("name", "additionalPrice")
+    VALUES ($1, $2) RETURNING *`
+    const values = [data.name, data.additionalPrice]
     const {rows} = await db.query(sql, values)
     return rows[0]
 }
@@ -91,18 +91,19 @@ exports.update = async (id, body) => {
         throw new Error(`invalid input`)
     }
 
-    const queryId = await isExist("tags", id)
+    const queryId = await isExist("variant", id)
     if(queryId){
         throw new Error(queryId)
     }
 
-    const queryString =  await isStringExist("tags", "name", body.name) 
-    if(queryString){
-        throw new Error (queryString)
+    if(body.name){
+        const queryString =  await isStringExist("variant", "name", body.name)
+        if(queryString){
+            throw new Error (queryString)
+        } 
     }
-        
 
-    return await updateColumn(id, body, "tags")
+    return await updateColumn(id, body, "variant")
 }
 
 
@@ -111,12 +112,11 @@ exports.delete = async (id) => {
         throw new Error(`invalid input`)
     }
 
-    const queryId = await isExist("tags", id)
+    const queryId = await isExist("variant", id)
     if(queryId){
         throw new Error(queryId)
     }
-    
-    const sql = `DELETE FROM "tags" WHERE "id" = $1 RETURNING *`
+    const sql = `DELETE FROM "variant" WHERE "id" = $1 RETURNING *`
     const values = [id]
     const {rows} = await db.query(sql, values)
     return rows[0]
