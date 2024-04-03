@@ -1,23 +1,17 @@
-const adminRouter = require('express').Router()
-
+const adminRouter = require('express').Router()                     
 
 adminRouter.use('/users', require('./users.router'))
+adminRouter.use('/products', require('./products.router'))
+adminRouter.use('/orders', require('./orders.router'))
+adminRouter.use('/categories', require('./categories.router'))
+adminRouter.use('/message', require('./message.router'))
+adminRouter.use('/order-details', require('./orderDetails.router'))
+adminRouter.use('/product-categories', require('./productCategories.router'))
+adminRouter.use('/product-ratings', require('./productRatings.router'))
+adminRouter.use('/product-size', require('./sizes.router'))
+adminRouter.use('/product-tags', require('./productTags.router'))
+adminRouter.use('/variant', require('./variant.router'))
+adminRouter.use('/promo', require('./promo.router'))
+adminRouter.use('/tags', require('./tags.router'))
 
-adminRouter.use('/products',require('./products.router'))
-adminRouter.use('/productSizes',require('./productSizes.router'))
-adminRouter.use('/productVariants',require('./productVariants.router'))
-
-adminRouter.use('/tags',require('./tags.router'))
-adminRouter.use('/productTags',require('./productTags.router'))
-adminRouter.use('/productRatings',require('./productRatings.router'))
-
-adminRouter.use('/categories',require('./categories.router'))
-adminRouter.use('/productCategories',require('./productCategories.router'))
-adminRouter.use('/promos',require('./promos.route'))
-
-adminRouter.use('/orders',require('./orders.router'))
-adminRouter.use('/orderDetails',require('./orderDetails.router'))
-
-adminRouter.use('/messages',require('./messages.router'))
-
-module.exports = adminRouter
+module.exports = adminRouter                                      
