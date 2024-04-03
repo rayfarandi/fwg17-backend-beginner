@@ -1,63 +1,57 @@
-const userModel = require('../models/users.model')
-const uploadMiddlware = require('../middleware/upload.middleware')
-const {errorHelper}  = require('../moduls/check')
-const upload = uploadMiddlware('profile').single('picture')
+const userModel = require('../models/user.model')
+const { errorHandler } = require('../moduls/check')
+const path = require('path')
 const fs = require('fs/promises')
-const path =require('path')
-const argon = require('argon2')
 
-
-
-exports.getProfile = async (req,res)=>{
-    const {id} = req.user
-    const user = await userModel.findOne(id)
-    if(user.password){
-        delete user.password
+exports.getProfile = async (req, res) => {
+    const {id} = req.user                                        
+    try {
+        const user = await userModel.findOne(id)
+        return res.json({                                                              
+            success: true,
+            message: 'detail user',
+            results: user                                                  
+        })
+    } catch (error) {
+        errorHandler(error, res)
     }
-    return res.json({
-        success:true,
-        message: 'ok',
-        results: user
-    })
 }
 
-exports.updateProfile = (req,res)=>{
-    upload(req, res, async(error)=>{
-    try{
-            if(error){
-                throw error
-                // return errorHelper(error,res)
-            }
-            
-            const {id} = req.user
-            
-            if(req.file){
-                const user = await userModel.findOne(id)
-                if(user.picture){
-                const savedPicture = path.join(global.path,'uploads','profile',user.picture)
-                        fs.access(savedPicture, fs.constants.R_OK)
-                        .then(()=>{
-                            fs.rm(savedPicture)
-                        }) .catch(()=>{})
-                    }
-                req.body.picture = req.file.filename
-            }
-            if(req.body.password){
-                req.body.password = await argon.hash(req.body.password)
-            }
-            
-        const user = await userModel.update(id, req.body)
+exports.updateProfile = async (req, res) => {
+    try {
         
-        if(user.password){
-            delete user.password
+
+        const {id} = req.user
+        const data = await userModel.findOne(id)
+
+        if(req.file){                                                                                           
+            if(data.picture){ 
+                const picturePath = path.join(global.path, 'uploads', 'users', data.picture)                    // mengambil jalur path gambar
+                fs.access(picturePath, fs.constants.R_OK).then(() => {
+                  fs.rm(picturePath);                                                                           // menghapus file berdasarkan jalur path
+                }).catch(() => {});                                                                       
+            }
+            console.log(req.file)
+            req.body.picture = req.file.filename
         }
-        return res.json({
-            success:true,
-            message:'ok',
-            results: user
-        })}catch(error){
-            errorHelper(error,res)
-        }
-        })
     
+        const user = await userModel.update(id, req.body)
+
+
+
+        if(user === "No data has been modified"){
+            return res.status(200).json({                                                              
+                success: true,
+                message: user                                                 
+            })
+        }
+
+        return res.json({                                                              
+            success: true,
+            message: 'update user successfully',
+            results: user                                                   
+        })
+    } catch (error) {
+        errorHandler(error, res)
+    }
 }

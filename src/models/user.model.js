@@ -1,6 +1,6 @@
 const db = require('../lib/db.lib')
+const { isExist, isStringExist, updateColumn } = require('../moduls/check')
 const argon = require('argon2')
-const { isCheck, isStringCheck, updateColumn } = require('../moduls/check')
 
 
 exports.findAll = async (searchKey='', sortBy="id", order="ASC", page, limit) => {
@@ -85,10 +85,12 @@ exports.findOneByEmail = async (email) => {
 
 
 exports.insert = async (body) => {
-    const queryString = await isStringCheck("users", "email", body.email)                                        // melakukan query terlebih dahulu sebelum memasukan data, untuk mengecek apakah ada data string yg sama tapi hanya berbeda huruf kecil dan huruf besarnya saja. 
+    const queryString = await isStringExist("users", "email", body.email) 
     if(queryString){
         throw new Error(queryString)
     }
+
+    
 
     if(body.password){
         body.password = await argon.hash(body.password)
@@ -112,13 +114,10 @@ exports.update = async (id, body) => {
         throw new Error(`invalid input`)
     }
     
-    // const queryId = await isCheck("users", id)                                                                     // melakukan query terlebih dahulu sebelum update, untuk mengecek apakah data yg ingin di update ada di database
-    // if(queryId){
-    //     throw new Error(queryId)
-    // }
+    
 
     if(body.email){
-        const queryString =  await isStringCheck("users", "email", body.email)                                       // melakukan query terlebih dahulu sebelum memasukan data, untuk mengecek apakah ada data string yg sama tapi hanya berbeda huruf kecil dan huruf besarnya saja.
+        const queryString =  await isStringExist("users", "email", body.email) 
         if(queryString){
             throw new Error (queryString)
         } 
@@ -129,11 +128,11 @@ exports.update = async (id, body) => {
 
 
 exports.delete = async (id) => {
-    if(isNaN(id)){                                                                            // error code 22P02 tidak ternotice karena ada isCheck jadi lempar error custom jika data yg di masukan bukan number 
+    if(isNaN(id)){  
         throw new Error(`invalid input`)                            
     }            
 
-    const queryId = await isCheck("users", id)                                                 // melakukan query terlebih dahulu sebelum delete, untuk mengecek apakah data yg ingin di delete ada di database
+    const queryId = await isExist("users", id)
     if(queryId){
         throw new Error(queryId)
     }
@@ -145,10 +144,9 @@ exports.delete = async (id) => {
 }
 
 
-exports.forgotPassword = async (id, newPassword) => {
-    const sql = `UPDATE "users" SET "password" = $2 WHERE "id" = $1`
-    const values = [id, newPassword]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
-}
-
+// exports.forgotPassword = async (id, newPassword) => {
+//     const sql = `UPDATE "users" SET "password" = $2 WHERE "id" = $1`
+//     const values = [id, newPassword]
+//     const {rows} = await db.query(sql, values)
+//     return rows[0]
+// } //masih salah

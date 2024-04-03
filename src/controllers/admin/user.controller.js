@@ -1,8 +1,8 @@
-const userModel = require('../../models/users.model')
-const { errorHelper } = require('../../moduls/check')
-const fs =  require('fs/promises')
+const userModel = require('../../models/user.model')
+const { errorHandler } = require('../../moduls/check')
 const path = require('path')
- 
+const fs = require('fs/promises')
+
 
 exports.getAllUsers = async (req, res) => { 
     try {
@@ -29,7 +29,7 @@ exports.getAllUsers = async (req, res) => {
             results: listUsers                                                    
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -43,7 +43,7 @@ exports.getDetailUser = async (req, res) => {
             results: user                                                  
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -63,19 +63,14 @@ exports.createUser = async (req, res) => {
         })
         
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
 
 exports.updateUser = async (req, res) => {
     try {
-        // if(req.body.role){
-        //     return res.status(403).json({
-        //         success: false,
-        //         message: 'Forbidden access denied cannot change role user'
-        //     })
-        // }
+        
 
         const {id} = req.params
         const data = await userModel.findOne(id)
@@ -84,11 +79,15 @@ exports.updateUser = async (req, res) => {
         }
 
         if(req.file){                                                                                           
-            if(data.picture){                                                                                   // jika data sebelumnya mempunyai gambar, maka gambara akan di hapus dan di ganti dengan gambar yg baru di upload
-                const picturePath = path.join(global.path, 'uploads', 'users', data.picture)                    // mengambil jalur path gambar
+            if(data.picture){ 
+            // jika data sebelumnya mempunyai gambar, maka gambara akan di hapus dan di ganti dengan gambar yg baru di upload
+                const picturePath = path.join(global.path, 'uploads', 'users', data.picture)
+                // mengambil path gambar
                 fs.access(picturePath, fs.constants.R_OK).then(() => {
-                    fs.rm(picturePath)                                                                  // menghapus file berdasarkan jalur path
-                }).catch(() => {});                                                                        // menghapus file berdasarkan jalur path
+                    fs.rm(picturePath)
+                    // menghapus file berdasarkan path
+                }).catch(() => {})
+                // menghapus file berdasarkan path
             }
             console.log(req.file)
             req.body.picture = req.file.filename
@@ -110,7 +109,7 @@ exports.updateUser = async (req, res) => {
             results: user                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
 
@@ -119,11 +118,14 @@ exports.deleteUser = async (req, res) => {
     try {
         const user = await userModel.delete(parseInt(req.params.id)) 
         if(user.picture){
-            const picturePath = path.join(global.path, "uploads", "users", user.picture)                        // mengambil jalur path picture
+            const picturePath = path.join(global.path, "uploads", "users", user.picture)
+            // mengambil path picture
             console.log(picturePath)
             fs.access(picturePath, fs.constants.R_OK).then(() => {
-                fs.rm(picturePath)                                                                  // menghapus file berdasarkan jalur path
-            }).catch(() => {});                                                                           // menghapus file berdasarkan jalur path
+                fs.rm(picturePath)
+                // menghapus file berdasarkan path
+            }).catch(() => {})
+            // menghapus file berdasarkan path
         }
         return res.json({                                                              
             success: true,
@@ -131,6 +133,6 @@ exports.deleteUser = async (req, res) => {
             results: user                                                   
         })
     } catch (error) {
-        errorHelper(error, res)
+        errorHandler(error, res)
     }
 }
