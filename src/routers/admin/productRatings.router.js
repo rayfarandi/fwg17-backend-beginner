@@ -1,6 +1,6 @@
 const prRouter = require('express').Router()
 
-const prController = require('../../controllers/admin/ProductRatings.controller')           
+const prController = require('../../controllers/admin/productRatings.controller')           
 
 prRouter.get('/', prController.getAllProductRatings)                               
 prRouter.get('/:id', prController.getDetailProductRating)                       
