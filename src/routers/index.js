@@ -7,8 +7,6 @@ const orderController = require('../controllers/admin/order.controller')
 const checkoutController = require('../controllers/checkout.controller')
 const orderDetailsController = require('../controllers/admin/orderDetails.controller')
 
-const uploadMiddleware = require('../middleware/upload.middleware')
-const multerErrorHandler = require('../middleware/multerErrorHandler.middleware')
 
 router.use('/auth', require('./auth.router'))
 router.use('/admin', authMiddleware, roleCheckMiddleware("admin"), require('./admin'))

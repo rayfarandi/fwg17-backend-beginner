@@ -1,4 +1,4 @@
-const pcModel = require('../../models/ProductCategories.model')
+const pcModel = require('../../models/productCategories.model')
 const { errorHandler } = require('../../moduls/check')
 
 
