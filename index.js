@@ -13,7 +13,7 @@ const app = express()
 
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
-app.use(cors())
+app.use(cors({}))
 app.use('/uploads/products', express.static('uploads/products'))
 app.use('/uploads/users', express.static('uploads/users'))
 app.use('/uploads/testimonial', express.static('uploads/testimonial'))
