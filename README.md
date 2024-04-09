@@ -69,12 +69,12 @@ To run this project, you will need to add the following environment variables to
 #### Login
 
 ```http
-  POST auth/login
+  POST /login
 ```
 #### Register
 
 ```http
-  POST auth/register
+  POST /register
 ```
 
 | Parameter | Type     | Description                |
@@ -94,14 +94,16 @@ To run this project, you will need to add the following environment variables to
 | `promo` | `POST` | Insert a promo data |
 | `promo/:id` | `PATCH` | Update a promo data |
 | `promo/:id` | `DELETE` | Delete a promo data |
-| `product-size` | `GET` | Get a list of product size data |
-| `product-size/:id` | `GET` | Get a detailed product size data |
-| `product-size/:id` | `PATCH` | Update a product size data |
-| `product-variant` | `GET` | Get a list of product variant data |
-| `product-variant/:id` | `GET` | Get a detailed product variant data |
-| `product-variant` | `POST` | Insert a product variant data |
-| `product-variant/:id` | `PATCH` | Update a product variant data |
-| `product-variant/:id` | `DELETE` | Delete a product variant data |
+| `size` | `GET` | Get a list of product size data |
+| `size/:id` | `GET` | Get a detailed product size data |
+| `size/:id` | `POST` | Create a product size data |
+| `size/:id` | `PATCH` | Update a product size data |
+| `size/:id` | `DELETE` | Delete a product size data |
+| `variant` | `GET` | Get a list of product variant data |
+| `variant/:id` | `GET` | Get a detailed product variant data |
+| `variant` | `POST` | Insert a product variant data |
+| `variant/:id` | `PATCH` | Update a product variant data |
+| `variant/:id` | `DELETE` | Delete a product variant data |
 | `categories` | `GET` | Get a list of categories data |
 | `categories/:id` | `GET` | Get a detailed categories data |
 | `categories` | `POST` | Insert a categories data |
@@ -112,11 +114,11 @@ To run this project, you will need to add the following environment variables to
 | `tags` | `POST` | Insert a tags data |
 | `tags/:id` | `PATCH` | Update a tags data |
 | `tags/:id` | `DELETE` | Delete a tags data |
-| `product-tags` | `GET` | Get a list of product tags data |
-| `product-tags/:id` | `GET` | Get a detailed product tags data |
-| `product-tags` | `POST` | Insert a product tags data |
-| `product-tags/:id` | `PATCH` | Update a product tags data |
-| `product-tags/:id` | `DELETE` | Delete a product tags data |
+| `messages` | `GET` | Get a list of message data |
+| `messages/:id` | `GET` | Get a detailed message data |
+| `messages` | `POST` | Insert a message data |
+| `messages/:id` | `PATCH` | Update a message data |
+| `messages/:id` | `DELETE` | Delete a message data |
 | `product-categories` | `GET` | Get a list of product categories data |
 | `product-categories/:id` | `GET` | Get a detailed product categories data |
 | `product-categories` | `POST` | Insert a product categories data |
@@ -137,6 +139,18 @@ To run this project, you will need to add the following environment variables to
 | `order-details` | `POST` | Insert a order details data |
 | `order-details/:id` | `PATCH` | Update a order details data |
 | `order-details/:id` | `DELETE` | Delete a order details data |
+| `profile` | `GET` | Profile information user |
+| `profile` | `PATCH` | Update profile information user |
+| `history-order` | `GET` | List all history order |
+| `history-order/:id` | `GET` | Detail history order | 
+| `history-order` | `GET` | List all history order |
+| `history-order/products?orderId=int` | `GET` | List product one order |
+| `checkout` | `POST` | Create order |
+
+
+
+
+
 
 ## Technologies Used
 
@@ -146,14 +160,6 @@ To run this project, you will need to add the following environment variables to
 
 ## Coffee Shop - Frontend Repository
 https://github.com/rayfarandi/fwg17-beginner-frontend
-
-## Technologies Used
-
-The project structure is organized as follows: 
-- src/: contains the source code of the project.
-- asset/: image and icon media.
-- components/: Reusable component used throughout the project.
-- pages/: Individual pages of the application.
 
 
 ## Contributing
