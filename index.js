@@ -13,19 +13,17 @@ const app = express()
 
 app.use(express.urlencoded({extended: true}))
 app.use(morgan('dev'))
-// app.use(cors()) 
+app.use(cors()) 
 
-app.use(cors({
-  origin: 'https://rans-cofee-shop.netlify.app', // Ganti dengan origin yang diizinkan
-  methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
-  allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept',
-  credentials: true
-}))
+// app.use(cors({
+//   origin: 'https://rans-cofee-shop.netlify.app', // Ganti dengan origin yang diizinkan
+//   methods: ['GET', 'POST', 'DELETE', 'UPDATE', 'PUT', 'PATCH'],
+//   allowedHeaders: 'Content-Type, Authorization, Origin, X-Requested-With, Accept',
+//   credentials: true
+// }))
 
-app.use('/uploads/products', express.static('uploads/products'))
-app.use('/uploads/users', express.static('uploads/users'))
-app.use('/uploads/testimonial', express.static('uploads/testimonial'))
 
+app.use('/uploads',express.static('uploads')) //menambahkan express static untuk image
 
 
 app.use('/', require('./src/routers'))
