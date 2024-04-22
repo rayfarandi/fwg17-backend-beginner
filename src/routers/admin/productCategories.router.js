@@ -8,4 +8,4 @@ pcRouter.post('/', pcController.createProductCategories)
 pcRouter.patch('/:id', pcController.updateProductCategories)
 pcRouter.delete('/:id', pcController.deleteProductCategories)
 
-module.exports = pcRouter                                                     
+module.exports = pcRouter

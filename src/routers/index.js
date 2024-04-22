@@ -7,14 +7,12 @@ const orderController = require('../controllers/admin/order.controller')
 const checkoutController = require('../controllers/checkout.controller')
 const orderDetailsController = require('../controllers/admin/orderDetails.controller')
 
-
 router.use('/auth', require('./auth.router'))
-router.use('/admin', authMiddleware, roleCheckMiddleware("admin"), require('./admin'))
+router.use('/admin', authMiddleware, roleCheckMiddleware('admin'), require('./admin'))
 router.use('/profile', authMiddleware, require('./profile.router'))
 
-
 router.get('/products', productController.getAllProducts)
-router.get('/products/:id', productController.getDetailProduct) 
+router.get('/products/:id', productController.getDetailProduct)
 
 router.post('/checkout', authMiddleware, checkoutController.createOrder)
 
@@ -25,10 +23,6 @@ router.get('/order-details', authMiddleware, checkoutController.getOrderProducts
 router.get('/data-size', checkoutController.getPriceSize)
 router.get('/data-variant', checkoutController.getPriceVariant)
 
-router.post('/order-flow', authMiddleware, roleCheckMiddleware("customer"), orderFlow.orderProducts)
-
-
-
-
+router.post('/order-flow', authMiddleware, roleCheckMiddleware('customer'), orderFlow.orderProducts)
 
 module.exports = router

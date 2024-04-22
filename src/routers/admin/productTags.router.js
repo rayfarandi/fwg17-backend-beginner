@@ -8,4 +8,4 @@ ptRouter.post('/', ptController.createProductTags)
 ptRouter.patch('/:id', ptController.updateProductTags)
 ptRouter.delete('/:id', ptController.deleteProductTags)
 
-module.exports = ptRouter                                                     
+module.exports = ptRouter

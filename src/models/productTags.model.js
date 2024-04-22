@@ -1,13 +1,10 @@
-
-
 // const db = require('../lib/db.lib')
 // const { isExist, updateColumn } = require('../moduls/handling')
-
 
 // exports.findAll = async (sortBy="id", order="ASC", page, limit) => {
 //     const orderType = ["ASC", "DESC"]
 //     order = orderType.includes(order)? order : "ASC"
-    
+
 //     const limitData = limit
 //     const offset = (page - 1) * limitData
 
@@ -20,9 +17,9 @@
 //             columnSort.push(`"${item}" ${order}`)
 //            }
 //         })
-    
+
 //         const sql = `
-//         SELECT * 
+//         SELECT *
 //         FROM "productTags"
 //         ORDER BY ${columnSort.join(', ')}
 //         LIMIT ${limitData} OFFSET ${offset}
@@ -50,14 +47,12 @@
 //     return rows
 // }
 
-
 // exports.countAll = async () => {
 //     const sql = `SELECT COUNT("id") AS "counts" FROM "productTags"`
 //     const values = []
 //     const {rows} = await db.query(sql, values)
 //     return rows[0].counts
 // }
-
 
 // exports.findOne = async (id) => {
 //     const sql = `
@@ -71,7 +66,6 @@
 //     return rows[0]
 // }
 
-
 // exports.insert = async (body) => {
 //     const sql = `
 //     INSERT INTO "productTags" ("productId", "tagId")
@@ -80,7 +74,6 @@
 //     const {rows} = await db.query(sql, values)
 //     return rows[0]
 // }
-
 
 // exports.update = async (id, body) => {
 //     const queryId = await isExist("productTags", id)
@@ -91,7 +84,6 @@
 
 //     return await updateColumn(id, body, "productTags")
 // }
-
 
 // exports.delete = async (id) => {
 //     const queryId = await isExist("productTags", id)

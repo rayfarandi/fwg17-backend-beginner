@@ -1,62 +1,54 @@
-
 const db = require('../lib/db.lib')
 
 exports.insertOrder = async (userId, promoId, deliveryAddress, fullName, email) => {
-    let uniqueNumber
-    while (true) {
-        // agar hanya menghasilkan 3 angka bulat
-        uniqueNumber = Math.ceil(Math.random() * 1000)
-        if(uniqueNumber.toString().length === 3){
-            break
-        }
+  let uniqueNumber
+  while (true) {
+    // agar hanya menghasilkan 3 angka bulat
+    uniqueNumber = Math.ceil(Math.random() * 1000)
+    if (uniqueNumber.toString().length === 3) {
+      break
     }
+  }
 
-    const orderNumber = `${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}-${uniqueNumber}`
-    const sql = `
+  const orderNumber = `${new Date().getFullYear()}${(new Date().getMonth() + 1).toString().padStart(2, '0')}${new Date().getDate().toString().padStart(2, '0')}-${uniqueNumber}`
+  const sql = `
     INSERT INTO "orders"("userId", "orderNumber", "promoId", "deliveryAddress", "fullName", "email")
     VALUES ($1, $2, $3, $4, $5, $6)
     RETURNING *
     `
-    const values = [userId, orderNumber, promoId, deliveryAddress, fullName, email]
-    const {rows} = await db.query(sql, values)
-    console.log(rows[0])
-    return rows[0]
+  const values = [userId, orderNumber, promoId, deliveryAddress, fullName, email]
+  const { rows } = await db.query(sql, values)
+  console.log(rows[0])
+  return rows[0]
 }
-
-
-
-
 
 exports.findByColumn = async (searcKey, column, table) => {
-    const sql = `SELECT "id" FROM "${table}" WHERE "${column}" = $1`
-    const values = [searcKey]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const sql = `SELECT "id" FROM "${table}" WHERE "${column}" = $1`
+  const values = [searcKey]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
-
 
 exports.findById = async (id, column, table) => {
-    const sql = `SELECT "${column}" FROM "${table}" WHERE "id" = $1`
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const sql = `SELECT "${column}" FROM "${table}" WHERE "id" = $1`
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
 
-
 exports.insertOrderDetails = async (orderId, productId, sizeId, variantId, quantity) => {
-    const sql = `
+  const sql = `
     INSERT INTO "orderDetails"("orderId", "productId", "sizeId", "variantId", "quantity")
     VALUES ($1, $2, $3, $4, $5)
     RETURNING *
     `
-    const values = [orderId, productId, sizeId, variantId, quantity]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const values = [orderId, productId, sizeId, variantId, quantity]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
 
-
 exports.countSubtotal = async (id) => {
-    const sql = `
+  const sql = `
     update "orderDetails" set "subtotal" = (
         select (("p"."basePrice" - "p"."discount") * "od"."quantity") + "s"."additionalPrice" + "v"."additionalPrice"
         from "orderDetails" "od"
@@ -68,41 +60,36 @@ exports.countSubtotal = async (id) => {
     where "id" = $1
     RETURNING *
     `
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
 
-
 exports.countTotal = async (id) => {
-    const sql = `
+  const sql = `
     update "orders" set "total" = (select sum("subtotal") from "orderDetails" where "orderId" = $1) + (select "taxAmount" from "orders" where "id" = $1)
     where "id" = $1
     RETURNING *
     `
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
 
-
-
 exports.countGrandTotal = async (id) => {
-    const sql = `
+  const sql = `
     update "orders" set "grandTotal" = (select "total" from "orders" where "id" = $1)
     where "id" = $1
     RETURNING *
     `
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    console.log
-    return rows[0]
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+
+  return rows[0]
 }
 
-
-
 exports.countPriceCut = async (id) => {
-    const sql = `
+  const sql = `
     update "orders" set "priceCut" = (
         select "o"."total" * "pro"."percentage"
         from "orders" "o"
@@ -112,23 +99,19 @@ exports.countPriceCut = async (id) => {
     where "id" = $1
     RETURNING *
     `
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    return rows[0]
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+  return rows[0]
 }
 
-
-
 exports.countGrandTotalWithPriceCut = async (id) => {
-    const sql = `
+  const sql = `
     update "orders" set "grandTotal" = (select "total" from "orders" where "id" = $1) - (select "priceCut" from "orders" where "id" = $1)
     where "id" = $1
     RETURNING *
     `
-    const values = [id]
-    const {rows} = await db.query(sql, values)
-    console.log
-    return rows[0]
+  const values = [id]
+  const { rows } = await db.query(sql, values)
+
+  return rows[0]
 }
-
-

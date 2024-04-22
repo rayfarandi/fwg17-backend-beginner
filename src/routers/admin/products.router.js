@@ -6,10 +6,10 @@ const uploadMiddleware = require('../../middleware/upload.middleware')
 
 const multerErrorHandler = require('../../middleware/multerErrorHandler.middleware')
 
-productRouter.get('/', productController.getAllProducts)                       
-productRouter.get('/:id', productController.getDetailProduct)                 
-productRouter.post('/', uploadMiddleware('products').single('image'), multerErrorHandler, productController.createProduct)                      
-productRouter.patch('/:id',uploadMiddleware('products').single('image'), multerErrorHandler,  productController.updateProduct)       
-productRouter.delete('/:id', productController.deleteProduct)                       
+productRouter.get('/', productController.getAllProducts)
+productRouter.get('/:id', productController.getDetailProduct)
+productRouter.post('/', uploadMiddleware('products').single('image'), multerErrorHandler, productController.createProduct)
+productRouter.patch('/:id', uploadMiddleware('products').single('image'), multerErrorHandler, productController.updateProduct)
+productRouter.delete('/:id', productController.deleteProduct)
 
-module.exports = productRouter                                                     
+module.exports = productRouter

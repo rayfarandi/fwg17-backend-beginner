@@ -6,4 +6,4 @@ promoRouter.get('/:id', promoController.getDetailPromo)
 promoRouter.post('/', promoController.createPromo)
 promoRouter.patch('/:id', promoController.updatePromo)
 promoRouter.delete('/:id', promoController.deletePromo)
-module.exports = promoRouter                                                     
+module.exports = promoRouter

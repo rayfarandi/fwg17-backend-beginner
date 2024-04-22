@@ -5,6 +5,6 @@ variantRouter.get('/', variantController.getAllVariant)
 variantRouter.get('/:id', variantController.getDetailVariant)
 variantRouter.post('/', variantController.createVariant)
 variantRouter.patch('/:id', variantController.updateVariant)
-variantRouter.delete('/:id', variantController.deleteVariant) 
+variantRouter.delete('/:id', variantController.deleteVariant)
 
-module.exports = variantRouter                                                     
+module.exports = variantRouter

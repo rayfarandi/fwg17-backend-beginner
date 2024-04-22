@@ -1,4 +1,4 @@
-const adminRouter = require('express').Router()                     
+const adminRouter = require('express').Router()
 
 adminRouter.use('/users', require('./users.router'))
 adminRouter.use('/products', require('./products.router'))
@@ -14,4 +14,4 @@ adminRouter.use('/variant', require('./variant.router'))
 adminRouter.use('/promo', require('./promo.router'))
 adminRouter.use('/tags', require('./tags.router'))
 
-module.exports = adminRouter                                      
+module.exports = adminRouter
