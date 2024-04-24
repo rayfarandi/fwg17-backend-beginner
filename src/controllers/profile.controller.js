@@ -51,3 +51,41 @@ exports.updateProfile = async (req, res) => {
     errorHandler(error, res)
   }
 }
+
+exports.deletePicture = async (req, res) => {
+  try {
+    const { id } = req.user
+    const data = await userModel.findOne(id)
+
+    if (data.picture) {
+      const picturePath = path.join(global.path, 'uploads', 'users', data.picture)
+      // fs.access(picturePath, fs.constants.R_OK)
+      //   .then(() => {
+      //     fs.unlink(picturePath, (err) => {
+      //       if (err) {
+      //         throw err // Handle error when unlinking file
+      //       }
+      //     })
+      //   })
+      //   .catch(() => {})
+      fs.access(picturePath, fs.constants.R_OK).then(() => {
+        fs.rm(picturePath) // menghapus file berdasarkan jalur path
+      }).catch(() => {})
+
+      // hapus picture on database
+      data.picture = 'null'
+      await userModel.update(id, { picture: 'null' })
+      return res.json({
+        success: true,
+        message: 'Profile picture deleted successfully'
+      })
+    } else {
+      return res.status(400).json({
+        success: false,
+        message: 'No profile picture found for the user'
+      })
+    }
+  } catch (error) {
+    errorHandler(error, res)
+  }
+}

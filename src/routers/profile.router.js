@@ -6,5 +6,6 @@ const profileController = require('../controllers/profile.controller')
 
 profileRouter.get('/', profileController.getProfile)
 profileRouter.patch('/', uploadMiddleware('users').single('picture'), multerErrorHandler, profileController.updateProfile)
+profileRouter.delete('/', profileController.deletePicture)
 
 module.exports = profileRouter

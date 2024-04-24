@@ -15,8 +15,10 @@ export default [
   { languageOptions: { globals: globals.node } },
   ...compat.extends('standard'),
   {
-    rules:{
-      'no-unused-expressions' : ['off']
+    rules: {
+      // Menonaktifkan aturan yang ingin Anda abaikan di sini
+      'no-unused-expressions': 'off',
+      eqeqeq: 'off'
     }
   }
 ]
